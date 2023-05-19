@@ -1,0 +1,151 @@
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+
+public class MyCITS2200Project implements CITS2200Project {
+
+    // Setting up some variables as per the assignment editorial 
+
+    private int numVertices; // number of vertices
+    private ArrayList<ArrayList<Integer>> adj; // Graph in linkedlist representation, an arraylist of arraylist of int
+    private ArrayList<String> urlArraylist; // List of URL (vertices), located using index
+    private HashMap<String, Integer> urlKey; // Key = URL, value = index in URLlist
+
+    public MyCITS2200Project() {
+        numVertices = 4; // temporary as an example, may not need
+        adj =   new ArrayList<ArrayList<Integer> >();
+        urlArraylist = new ArrayList<String>();
+        urlKey = new HashMap<String, Integer>();
+    }
+
+    public void addEdge(String urlFrom, String urlTo) {
+        // Add the edge to the graph
+        if (!adj.contains(urlFrom) && !adj.contains(urlTo)){
+            addVertex(urlFrom);
+            addVertex(urlTo);
+        }
+    }
+
+    private void addVertex(String v){
+        /** Add vertex to the list of vertices urlArraylist - store url based on index position
+         * add it to the hashmap urlKey - store url as key to find index position in urlArraylist
+         */
+        urlArraylist.add(v);
+        urlKey.put(v,urlArraylist.indexOf(v));
+        adj.add(new ArrayList<>());
+    }
+
+    /**
+	 * Finds the shorest path in number of links between two pages.
+	 * If there is no path, returns -1.
+	 * 
+	 * @param urlFrom the URL where the path should start.
+	 * @param urlTo the URL where the path should end.
+	 * @return the legnth of the shorest path in number of links followed.
+	 */
+    public int getShortestPath(String urlFrom, String urlTo) {
+        // Implement the shortest path algorithm
+        return -1;
+    }
+
+        /**
+         * Finds a Hamiltonian path in the page graph. There may be many
+         * possible Hamiltonian paths. Any of these paths is a correct output.
+         * This method should never be called on a graph with more than 20
+         * vertices. If there is no Hamiltonian path, this method will
+         * return an empty array. The output array should contain the URLs of pages
+         * in a Hamiltonian path. The order matters, as the elements of the
+         * array represent this path in sequence. So the element [0] is the start
+         * of the path, and [1] is the next page, and so on.
+         * 
+         * @return a Hamiltonian path of the page graph.
+         */    
+    public String[] getHamiltonianPath(){
+
+    }
+
+    /**
+	 * Finds all the centers of the page graph. The order of pages
+	 * in the output does not matter. Any order is correct as long as
+	 * all the centers are in the array, and no pages that aren't centers
+	 * are in the array.
+	 * 
+	 * @return an array containing all the URLs that correspond to pages that are centers.
+	 */
+    public String[] getCenters() {
+        // Implement the algorithm to find the centers
+
+         
+
+        // 4 is a placeholder TODO: fix
+        String[] result = new String[4];
+
+
+
+        return new String[0];
+    }
+
+    public String[][] getStronglyConnectedComponents() {
+        // Set up necesary variables
+        ArrayList<ArrayList<Integer>> transposedAdj = new ArrayList<ArrayList<Integer>>();
+        boolean[] visited = new boolean[adj.size()];
+        Stack<Integer> stack = new Stack<Integer>();
+        String[][] result = new String[adj.size()][adj.size()];
+
+        // Implement the Kosaraju-Shamir algorithm
+        // Perform the first depth-first search (DFS)
+        for (int i = 0; i < numVertices; i++) {
+            if (!visited.contains(i)) {
+                dfsFirst(i, stack);
+            }
+        }
+        // Reverse the direction of the graph
+        for (int i=0;i<numVertices;i++){
+            for (int j=0;j<adj[i].size();j++){
+                transposedAdj = addEdge(adj[i].get(j), i);
+            }
+        }
+
+        // Perform the second pass of BFS in the reversed order
+        // Get strongle connected vertices
+
+        return result;
+    }
+
+    // TO DO: ask if it matters if we use recursion/loop ??? in terms of efficiency 
+    private void dfsFirst(int vertex, Stack<Integer> stack) {
+        visited.add(vertex);
+        stack.push(vertex);
+        while (!stack.isEmpty()) {
+            int currentVertex = stack.pop();
+            System.out.println(currentVertex); // Process or visit the current vertex
+
+            LinkedList<Integer> neighbors = adj[currentVertex];
+            for (int neighbor : neighbors) {
+                if (!visited.contains(neighbor)) {
+                    visited.add(neighbor);
+                    stack.push(neighbor);
+                }
+            }
+        }
+    }
+
+    private void dfsSecond(String vertex,visited,stack){
+            // TO DO: method for a depth first search
+
+
+    }
+
+
+
+    public static void main(String args[]){
+            // test adjacency list
+            
+    }
+
+    }
