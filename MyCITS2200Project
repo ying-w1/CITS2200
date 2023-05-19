@@ -13,18 +13,19 @@ public class MyCITS2200Project implements CITS2200Project {
 
     private int numVertices; // number of vertices
     private ArrayList<ArrayList<Integer>> adj; // Graph in linkedlist representation, an arraylist of arraylist of int
-    private ArrayList<String> urlArraylist; // List of URL (vertices), located using index
-    private HashMap<String, Integer> urlKey; // Key = URL, value = index in URLlist
+    private ArrayList<String> urlArray; // Array of URL (vertices)
+    private HashMap<String, Integer> urlKey; // Key = URL, value = index in urlArrayl
 
     public MyCITS2200Project() {
         numVertices = 4; // temporary as an example, may not need
         adj =   new ArrayList<ArrayList<Integer> >();
-        urlArraylist = new ArrayList<String>();
+        urlArray = new ArrayList<String>();
         urlKey = new HashMap<String, Integer>();
     }
 
     public void addEdge(String urlFrom, String urlTo) {
-        // Add the edge to the graph
+        // Add the edge to the graph assuming both vertices are not in the graph
+        // TO DO: Check if the assumption is that these urls are definitely not in the graph??
         if (!adj.contains(urlFrom) && !adj.contains(urlTo)){
             addVertex(urlFrom);
             addVertex(urlTo);
@@ -35,9 +36,15 @@ public class MyCITS2200Project implements CITS2200Project {
         /** Add vertex to the list of vertices urlArraylist - store url based on index position
          * add it to the hashmap urlKey - store url as key to find index position in urlArraylist
          */
-        urlArraylist.add(v);
-        urlKey.put(v,urlArraylist.indexOf(v));
-        adj.add(new ArrayList<>());
+        urlArray.add(v);
+        int index = urlArray.indexOf(v);
+        urlKey.put(v,index);
+        
+        ArrayList<Integer> temp = new ArrayList<>();
+        temp.add(index);
+
+        // Add ArrayList temp into the ArrayList adj
+        adj.add(temp);
     }
 
     /**
