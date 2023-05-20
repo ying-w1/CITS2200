@@ -36,9 +36,37 @@ public class interfaceTesting {
      * 
      * @param urlFrom the URL where the path should start.
      * @param urlTo   the URL where the path should end.
-     * @return the legnth of the shorest path in number of links followed.
+     * @return the length of the shortest path in number of links followed.
      */
     public int getShortestPath(String urlFrom, String urlTo) {
+        // check URLs are in graph
+        if (!graph.containsKey(urlFrom) || !graph.containsKey(urlTo)) {
+            return -1;
+        }
+        // enqueue URLs to visit
+        Queue<String> queue = new LinkedList<>();
+        // map of shortest distances from source
+        HashMap<String, Integer> distances = new HashMap<>();
+
+        // initialise queue and distances with source
+        queue.add(urlFrom);
+        distances.put(urlFrom, 0);
+
+        while (!queue.isEmpty()) {
+            String current = queue.remove();
+            if (current.equals(urlTo)) {
+                return distances.get(current);
+            }
+
+            List<String> neighbours = graph.get(current);
+            for (String neighbour : neighbours) {
+                if (!distances.containsKey(neighbour)) {
+                    queue.add(neighbour);
+                    distances.put(neighbour, distances.get(current) + 1);
+                }
+            }
+        }
+        // path not found
         return -1;
     }
 
@@ -52,7 +80,34 @@ public class interfaceTesting {
      *         centers.
      */
     public String[] getCenters() {
-        return null;
+        List<String> centers = new ArrayList<>();
+        int min = Integer.MAX_VALUE;
+        int max = 0;
+        for (String node : graph.keySet()) {
+
+            for (String start : graph.keySet()) {
+                if (!start.equals(node)) {
+                    int distance = getShortestPath(start, node);
+                    // assign largest distance to max
+                    if (distance > max) {
+                        max = distance;
+                    }
+                }
+
+            }
+            if (max < min) {
+                min = max;
+                centers.clear();
+                centers.add(node);
+            } else if (max == min) {
+                centers.add(node);
+            }
+        }
+
+        String[] centerArray = new String[centers.size()];
+        centers.toArray(centerArray);
+
+        return centerArray;
     }
 
     /**
@@ -66,6 +121,8 @@ public class interfaceTesting {
      * @return an array containing every strongly connected component.
      */
     public String[][] getStronglyConnectedComponents() {
+        // Tarjan's algorithm for DFS
+
         return null;
     }
 
@@ -85,97 +142,7 @@ public class interfaceTesting {
         return null;
     }
 
-    /* ---------------------TEST----------------------------- */
-    /**
-     * Method to create test graphs with random edges
-     * 
-     * @param numNodes number of nodes in the graph
-     * @param numEdges number of edges in the graph
-     */
-    public void createTestGraph(int numNodes, int numEdges) {
-        Random random = new Random();
-        List<String> nodes = new ArrayList<>();
-
-        // Generate nodes
-        for (int i = 0; i < numNodes; i++) {
-            String node = String.valueOf((char) ('A' + i));
-            nodes.add(node);
-        }
-
-        // clear graph before adding edges
-        graph.clear();
-
-        // Generate random edges
-        for (int i = 0; i < numEdges; i++) {
-            int fromIndex = random.nextInt(numNodes);
-            int toIndex = random.nextInt(numNodes);
-            String from = nodes.get(fromIndex);
-            String to = nodes.get(toIndex);
-            addEdge(from, to);
-        }
-    }
-
-    /**
-     * Prints the adjacency matrix representation of the graph.
-     * Not part of the assignment, but useful to see the adjacency matrix
-     * 
-     */
-    public void printAdjacencyMatrix() {
-        int numNodes = graph.size();
-        int[][] adjacencyMatrix = new int[numNodes][numNodes];
-        HashMap<String, Integer> vertexIndices = new HashMap<>();
-        List<String> nodes = new ArrayList<>(graph.keySet());
-
-        // Populate vertex indices
-        for (int i = 0; i < numNodes; i++) {
-            vertexIndices.put(nodes.get(i), i);
-        }
-
-        // Populate adjacency matrix
-        for (Map.Entry<String, List<String>> entry : graph.entrySet()) {
-            String from = entry.getKey();
-            Integer fromIndex = vertexIndices.get(from);
-            if (fromIndex == null) {
-                continue;
-            }
-            List<String> edges = entry.getValue();
-            for (String edge : edges) {
-                Integer toIndex = vertexIndices.get(edge);
-                if (toIndex != null) {
-                    adjacencyMatrix[fromIndex][toIndex] = 1;
-                }
-            }
-        }
-
-        // Print adjacency matrix
-        System.out.println("Adjacency Matrix:");
-        for (int[] row : adjacencyMatrix) {
-            for (int value : row) {
-                System.out.print(value + " ");
-            }
-            System.out.println();
-        }
-    }
-    /* --------------------------------------------------- */
-
     public static void main(String[] args) {
-        // class instance
-        interfaceTesting tester = new interfaceTesting();
-        // create test graph
-        tester.createTestGraph(10, 10);
-        System.out.println(tester.graph);
 
-        // Print the generated graph
-        for (Map.Entry<String, List<String>> entry : tester.graph.entrySet()) {
-            String from = entry.getKey();
-            List<String> toList = entry.getValue();
-            System.out.print(from + " -> ");
-            for (String to : toList) {
-                System.out.print(to + " ");
-            }
-            System.out.println();
-        }
-        // print adjacency matrix
-        tester.printAdjacencyMatrix();
     }
 }
