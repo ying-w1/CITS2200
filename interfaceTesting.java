@@ -1,14 +1,6 @@
 import java.util.*;
 import java.io.*;
 
-/*--------------SHOW GRAPH----------------*/
-import guru.nidi.graphviz.engine.Format;
-import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.model.MutableGraph;
-import guru.nidi.graphviz.model.Node;
-import guru.nidi.graphviz.model.Factory;
-/*----------------------------------------*/
-
 public class interfaceTesting {
     private HashMap<String, List<String>> graph;
 
@@ -100,7 +92,6 @@ public class interfaceTesting {
      * @param numNodes number of nodes in the graph
      * @param numEdges number of edges in the graph
      */
-
     public void createTestGraph(int numNodes, int numEdges) {
         Random random = new Random();
         List<String> nodes = new ArrayList<>();
@@ -110,6 +101,9 @@ public class interfaceTesting {
             String node = String.valueOf((char) ('A' + i));
             nodes.add(node);
         }
+
+        // clear graph before adding edges
+        graph.clear();
 
         // Generate random edges
         for (int i = 0; i < numEdges; i++) {
@@ -121,41 +115,54 @@ public class interfaceTesting {
         }
     }
 
-    public void visualizeGraph(String filename) {
-        MutableGraph g = Factory.mutGraph("graph");
+    /**
+     * Prints the adjacency matrix representation of the graph.
+     * Not part of the assignment, but useful to see the adjacency matrix
+     * 
+     */
+    public void printAdjacencyMatrix() {
+        int numNodes = graph.size();
+        int[][] adjacencyMatrix = new int[numNodes][numNodes];
+        HashMap<String, Integer> vertexIndices = new HashMap<>();
+        List<String> nodes = new ArrayList<>(graph.keySet());
 
-        // Add nodes to the graph
+        // Populate vertex indices
+        for (int i = 0; i < numNodes; i++) {
+            vertexIndices.put(nodes.get(i), i);
+        }
+
+        // Populate adjacency matrix
         for (Map.Entry<String, List<String>> entry : graph.entrySet()) {
             String from = entry.getKey();
-            g.add(Factory.node(from));
-            for (String to : entry.getValue()) {
-                g.add(Factory.mutNode(to));
+            Integer fromIndex = vertexIndices.get(from);
+            if (fromIndex == null) {
+                continue;
+            }
+            List<String> edges = entry.getValue();
+            for (String edge : edges) {
+                Integer toIndex = vertexIndices.get(edge);
+                if (toIndex != null) {
+                    adjacencyMatrix[fromIndex][toIndex] = 1;
+                }
             }
         }
 
-        // Add edges to the graph
-        for (Map.Entry<String, List<String>> entry : graph.entrySet()) {
-            String from = entry.getKey();
-            for (String to : entry.getValue()) {
-                g.add(Factory.mutNode(from).addLink(Factory.mutNode(to)));
+        // Print adjacency matrix
+        System.out.println("Adjacency Matrix:");
+        for (int[] row : adjacencyMatrix) {
+            for (int value : row) {
+                System.out.print(value + " ");
             }
-        }
-
-        File file = new File('testGraph.PNG');
-        try {
-            Graphviz.fromGraph(g).render(Format.PNG).toFile(file);
-            System.out.println("Graph visualization saved to: " + file.getAbsolutePath());
-        } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println();
         }
     }
-
-    /* ----------------------TEST----------------------------- */
+    /* --------------------------------------------------- */
 
     public static void main(String[] args) {
         // class instance
         interfaceTesting tester = new interfaceTesting();
-        tester.createTestGraph(5, 5);
+        // create test graph
+        tester.createTestGraph(10, 10);
         System.out.println(tester.graph);
 
         // Print the generated graph
@@ -168,5 +175,7 @@ public class interfaceTesting {
             }
             System.out.println();
         }
+        // print adjacency matrix
+        tester.printAdjacencyMatrix();
     }
 }
