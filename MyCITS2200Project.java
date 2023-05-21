@@ -16,11 +16,7 @@ public class MyCITS2200Project {
      * /wiki.com/page : 3
      * etc..
      */
-
-    // stuff that needed instantiating for use in multiple methods
-    private ArrayList<Integer> visited;
-    private int[][] adj;
-
+    
     /**
      * Constructor for MyCITS2200Project
      */
@@ -131,55 +127,48 @@ public class MyCITS2200Project {
         return result;
     }
 
-    public String[][] getStronglyConnectedComponents() {
-        // Set up necessary variables
-        ArrayList<Integer> visited = new ArrayList<>();
+      public String[][] getStronglyConnectedComponents() {
+        // Set up necesary variables
+        Set<Integer> visited = new HashSet<>();
         Stack<Integer> stack = new Stack<Integer>();
-        String[][] result = new String[adj.length][adj.length];
-        int[][] transposedAdj = new int[adj.length][adj.length];
+        String[][] result = new String[numVertices][numVertices];
+
+        // Insert root to stack & visited set
+        stack.push(0);
+        visited.add(0);
 
         // Implement the Kosaraju-Shamir algorithm
         // Perform the first depth-first search (DFS)
-        for (int i = 0; i < numVertices; i++) {
-            // if (!visited.contains(i)) { // cant use contains(), might have to loop array
-            // manually
-            // dfsFirst(i, stack);
-            // }
-        }
-        // Reverse the direction of the graph
-        for (int i = 0; i < numVertices; i++) {
-            for (int j = 0; j < adj[i].length; j++) {
-                // transposedAdj = addEdge(adj[i].get(j), i); //cant use get()
+        while (!stack.isEmpty()){
+            int s = stack.peek();
+            if (!visited.contains(s)){
+                visited.add(s);
             }
+
+            // Iterate through the graph add not vidited 
+            for (Map.Entry<Integer, List<Integer>> set : graph.entrySet()) {
+                int currentKey = set.getKey();
+                List<Integer> currentValues = set.getValue();
+
+                if(!visited.contains(currentKey)){
+                    visited.add(currentKey);
+
+                    //if the adjacent vertices are all in 'visited', push to stack
+                    visited.contains(currentValues);
+
+                    
+
+                    Iterator<Integer> iter = graph.get(currentKey).iterator();
+                    while(iter.hasNext()) {
+
+
+                    }
+                    {
+                        System.out.println(city);
+                        // compare the 
+                            stack.push(current);
+                }
         }
-
-        // Perform the second pass of BFS in the reversed order
-        // Get strongly connected vertices
-
-        return result;
-    }
-
-    // TO DO: ask if it matters if we use recursion/loop ??? in terms of efficiency
-    private void dfsFirst(int vertex, Stack<Integer> stack) {
-        visited.add(vertex); // boolean type so you cant add int to array
-        stack.push(vertex);
-        while (!stack.isEmpty()) {
-            int currentVertex = stack.pop();
-            System.out.println(currentVertex); // Process or visit the current vertex
-
-            // LinkedList<Integer> neighbors = adj[currentVertex]; // needs to be adj[][]
-            // for (int neighbor : neighbors) {
-            // if (!visited.contains(neighbor)) {
-            // visited.add(neighbor);
-            // stack.push(neighbor);
-            // }
-            // }
-        }
-    }
-
-    private void dfsSecond(String vertex, ArrayList<Integer> visited, Stack<Integer> stack) {
-        // TO DO: method for a depth first search
-
     }
 
     public static void main(String args[]) {
