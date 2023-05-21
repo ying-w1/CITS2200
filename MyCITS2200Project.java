@@ -28,10 +28,12 @@ public class MyCITS2200Project {
         urlKey = new HashMap<String, Integer>();
     }
 
-    /* ToDo javadocs */
+    /**
+         * Check if vertex exist in the graph
+         * If not in graph, add to graph
+         */
     public void addEdge(String urlFrom, String urlTo) {
-
-        // Add the edge to Map
+        // Add the edge to our map & array  
         addVert(urlFrom);
         addVert(urlTo);
 
@@ -43,11 +45,6 @@ public class MyCITS2200Project {
     }
 
     private void addVert(String v) {
-        /**
-         * Check if vertex exist in the graph
-         * If not in graph, add to graph
-         */
-
         // Check if the edge exists in the map from URL to ID
         if (!urlKey.containsKey(v)) {
             urlArray.add(v);
