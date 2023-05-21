@@ -1,7 +1,7 @@
 import java.util.*;
 import java.io.*;
 
-public class interfaceTesting {
+public class InterfaceTesting {
     // fields
     private HashMap<String, List<String>> graph;
 
@@ -17,7 +17,7 @@ public class interfaceTesting {
     /**
      * Class constructor for interfaceTesting
      */
-    public interfaceTesting() {
+    public void interfaceTesting() {
         graph = new HashMap<String, List<String>>();
     }
 
@@ -235,7 +235,26 @@ public class interfaceTesting {
     }
 
     public static void main(String[] args) {
-        // test the functions
+        // test the functions on instance of the class
+        InterfaceTesting interfaceTesting = new InterfaceTesting();
+
+        // ADD EDGES METHOD addEdge(String urlFrom, String urlTo)
+        interfaceTesting.addEdge("A", "B");
+        interfaceTesting.addEdge("A", "C");
+
+        /*
+         * // Get the strongly connected components
+         * String[][] components = graph.getStronglyConnectedComponents();
+         * // Print the components
+         * for (String[] component : components) {
+         * System.out.println(Arrays.toString(component));
+         * }
+         * 
+         * // Get the Hamiltonian path
+         * String[] path = graph.getHamiltonianPath();
+         * // Print the path
+         * System.out.println(Arrays.toString(path));
+         */
 
     }
 }
