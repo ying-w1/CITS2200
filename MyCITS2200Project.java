@@ -63,7 +63,7 @@ public class MyCITS2200Project {
         if (!graph.containsKey(idURLFrom)) {
             List<Integer> temp = new LinkedList<>();
             temp.add(idURLTo);
-            graph.put(idURLTo, temp);
+            graph.put(idURLFrom, temp);
         }
     }
 
@@ -74,7 +74,7 @@ public class MyCITS2200Project {
         if (!transGraph.containsKey(idURLFrom)) {
             List<Integer> temp2 = new LinkedList<>();
             temp2.add(idURLTo);
-            graph.put(idURLTo, temp2);
+            transGraph.put(idURLFrom, temp2);
         }
     }
 
@@ -129,50 +129,72 @@ public class MyCITS2200Project {
 
       public String[][] getStronglyConnectedComponents() {
         // Set up necesary variables
-        Set<Integer> visited = new HashSet<>();
+        boolean[] visited = new boolean[urlArray.size()];
         Stack<Integer> stack = new Stack<Integer>();
-        String[][] result = new String[numVertices][numVertices];
-
-        // Insert root to stack & visited set
-        stack.push(0);
-        visited.add(0);
+        String[][] result;
+        Arrays.fill(visited, Boolean.FALSE);
 
         // Implement the Kosaraju-Shamir algorithm
         // Perform the first depth-first search (DFS)
-        while (!stack.isEmpty()){
-            int s = stack.peek();
-            if (!visited.contains(s)){
-                visited.add(s);
+        for (int urlID : graph.keySet()) {
+            if(!visited[urlID]){
+                firstDFS(urlID,stack,visited);
             }
-
-            // Iterate through the graph add not vidited 
-            for (Map.Entry<Integer, List<Integer>> set : graph.entrySet()) {
-                int currentKey = set.getKey();
-                List<Integer> currentValues = set.getValue();
-
-                if(!visited.contains(currentKey)){
-                    visited.add(currentKey);
-
-                    //if the adjacent vertices are all in 'visited', push to stack
-                    visited.contains(currentValues);
-
-                    
-
-                    Iterator<Integer> iter = graph.get(currentKey).iterator();
-                    while(iter.hasNext()) {
-
-
-                    }
-                    {
-                        System.out.println(city);
-                        // compare the 
-                            stack.push(current);
-                }
         }
+
+        // Reset the visited array in preparation for the second DFS
+        Arrays.fill(visited, Boolean.FALSE);
+
+        // Perform the second depth first search on the transposed graph
+        // Get strongly connected components
+        List<List<Integer>> sccList = new ArrayList<>();
+        while (!stack.isEmpty()){
+            int current = stack.pop();
+            if (!visited[current]) {
+                List<Integer> scc = new ArrayList<>();
+                secondDFS(current, visited, scc);
+                sccList.add(scc);
+            }
+        }
+
+        // Convert List of strongly connected components to String[][]
+        result = new String[sccList.size()][];
+        for (int i = 0; i < sccList.size(); i++) {
+            List<Integer> scc = sccList.get(i);
+            result[i] = new String[scc.size()];
+            for (int j = 0; j < scc.size(); j++) {
+                int urlID = scc.get(j);
+                result[i][j] = urlArray.get(urlID);
+                }
+            }
+        return result;
     }
 
-    public static void main(String args[]) {
-        // test adjacency list
+    private void firstDFS(int vertex, Stack<Integer> stack, boolean[] visited) {
+        visited[vertex] = true;
+        List<Integer> neighbours = graph.get(vertex);
 
+        if (neighbours != null){
+            for (int i:neighbours){
+                if(!visited[i]){
+                    firstDFS(i,stack,visited);
+                }
+            }
+        }
+        stack.push(vertex);
+    }
+
+    private void secondDFS(int vertex, boolean[] visited, List<Integer> scc) {
+        visited[vertex] = true;
+        scc.add(vertex);
+        List<Integer> neighbours = transGraph.get(vertex);
+    
+        if (neighbours != null) {
+            for (int i : neighbours) {
+                if (!visited[i]) {
+                    secondDFS(i, visited, scc);
+                }
+            }
+        }
     }
 }
