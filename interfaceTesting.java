@@ -1,13 +1,20 @@
 import java.util.*;
 import java.io.*;
 
-public class interfaceTesting {
+public class InterfaceTesting {
+    // fields
     private HashMap<String, List<String>> graph;
 
-    /**
-     * Class constructor for interfaceTesting
+    /*
+     * NOTE ON OPERATORS
+     * (from examples and blog posts eg. stack-overflow)
+     * & is bitwise AND
+     * ^ is bitwise XOR
+     * << is bitwise left shift
+     * ^= is bitwise XOR assignment
      */
-    public interfaceTesting() {
+
+    public void interfaceTesting() {
         graph = new HashMap<String, List<String>>();
     }
 
@@ -172,10 +179,78 @@ public class interfaceTesting {
      * @return a Hamiltonian path of the page graph.
      */
     public String[] getHamiltonianPath() {
-        return null;
+        // initialise variables
+        int numberOfVertices = graph.size();
+        if (numberOfVertices > 20) {
+            System.out.println("Too many vertices, i'm not doing it");
+            return new String[0];
+        }
+
+        ArrayList<String> vertices = new ArrayList<>(graph.keySet());
+        int[][] dpt = new int[numberOfVertices][1 << numberOfVertices]; // dynamic programming table
+
+        for (int[] row : dpt) {
+            Arrays.fill(row, Integer.MAX_VALUE);
+        }
+        // starting vertex 0
+        dpt[0][1] = 0;
+
+        for (int mask = 1; mask < 1 << numberOfVertices; mask++) {
+            for (int currentVertex = 0; currentVertex < numberOfVertices; currentVertex++) {
+                if ((mask & (1 << currentVertex)) != 0) {
+                    int previousMask = mask ^ (1 << currentVertex);
+                    for (String previousVertex : graph.get(vertices.get(currentVertex))) {
+                        int previousVertexIndex = vertices.indexOf(previousVertex);
+                        if (previousVertexIndex != -1 && (previousMask & (1 << previousVertexIndex)) != 0) {
+                            dpt[currentVertex][mask] = Math.min(dpt[currentVertex][mask],
+                                    dpt[previousVertexIndex][previousMask] + 1);
+                        }
+                    }
+                }
+            }
+        }
+        // build the path
+        ArrayList<String> hamiltonianPath = new ArrayList<>();
+        int currentVertex = 0;
+        int currentMask = (1 << numberOfVertices) - 1;
+        while (hamiltonianPath.size() < numberOfVertices) {
+            hamiltonianPath.add(vertices.get(currentVertex));
+            int neighbourVertex = -1;
+            for (String neighbour : graph.get(vertices.get(currentVertex))) {
+                int neighbourIndex = vertices.indexOf(neighbour);
+                if (neighbourIndex != -1 && (currentMask & (1 << neighbourIndex)) != 0
+                        && dpt[currentVertex][currentMask] == dpt[neighbourIndex][currentMask ^ (1 << neighbourIndex)]
+                                + 1) {
+                    neighbourVertex = neighbourIndex;
+                    break;
+                }
+            }
+            currentVertex = neighbourVertex;
+            currentMask ^= (1 << currentVertex);
+        }
+        return hamiltonianPath.toArray(new String[numberOfVertices]);
     }
 
     public static void main(String[] args) {
+        // instance of the class
+        InterfaceTesting test = new InterfaceTesting();
+        // hashmap representing adjacency list
+        HashMap<String, List<String>> graph = new HashMap<>();
 
+        // addEdge(String urlFrom, String urlTo)
+        // test.addEdge(graph, "A", "B");
+        System.out.println("addEdge test:" + "\n" + graph);
+
+        // String[] getCenters()
+        System.out.println("getCenters test:" + "\n");
+
+        // String[][] getStronglyConnectedComponents()
+        System.out.println("getStronglyConnectedComponents test:" + "\n");
+
+        // getShortestPath(String urlFrom, String urlTo)
+        System.out.println("getShortestPath test:" + "\n");
+
+        // String[] getHamiltonianPath()
+        System.out.println("getHamiltonianPath test:" + "\n");
     }
 }

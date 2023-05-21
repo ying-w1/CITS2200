@@ -1,3 +1,4 @@
+import java.io.*;
 import java.util.*;
 
 public class MyCITS2200Project {
@@ -16,7 +17,7 @@ public class MyCITS2200Project {
      * /wiki.com/page : 3
      * etc..
      */
-    
+
     /**
      * Constructor for MyCITS2200Project
      */
@@ -127,7 +128,7 @@ public class MyCITS2200Project {
         return result;
     }
 
-      public String[][] getStronglyConnectedComponents() {
+    public String[][] getStronglyConnectedComponents() {
         // Set up necesary variables
         boolean[] visited = new boolean[urlArray.size()];
         Stack<Integer> stack = new Stack<Integer>();
