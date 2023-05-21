@@ -89,7 +89,38 @@ public class MyCITS2200Project {
      */
     public int getShortestPath(String urlFrom, String urlTo) {
         // Implement the shortest path algorithm
-        return -1;
+
+        // create queue
+        Queue<Integer> queue = new LinkedList<Integer>();
+        // create array for distance
+        int[] distance = new int[urlArray.size()];
+        // set all distances to -1
+        Arrays.fill(distance, -1);
+
+        // enqueue the starting vertex
+        queue.add(urlKey.get(urlFrom));
+        // mark the starting vertex as visited
+        distance[urlKey.get(urlFrom)] = -1;
+
+        // while the queue is not empty
+        while (!queue.isEmpty()) {
+            // dequeue a vertex
+            int current = queue.poll();
+            if (current == urlKey.get(urlTo)) {
+                // found the destination
+                return distance[current];
+            }
+            // for each neighbour in current vertex key:value set
+            for (int neighbour : graph.get(current)) {
+                // if unvisited neighbour
+                if (distance[neighbour] == -1) {
+                    distance[neighbour] = distance[current] + 1;
+                    // add to queue
+                    queue.add(neighbour);
+                }
+            }
+        }
+        return distance[urlKey.get(urlTo)];
     }
 
     /**
@@ -105,9 +136,55 @@ public class MyCITS2200Project {
      * @return a Hamiltonian path of the page graph.
      */
     public String[] getHamiltonianPath() {
-        // placeholder so theres no error
-        String[] result = new String[numVertices];
-        return result;
+        // number vertices
+        int numVertices = urlArray.size();
+        // hamiltonianPath
+        ArrayList<Integer> hamiltonianPath = new ArrayList<Integer>();
+        // visited
+        boolean[] visited = new boolean[numVertices];
+
+        // set all vertices as not visited
+        Arrays.fill(visited, false);
+        // add start to path
+        hamiltonianPath.add(0);
+        // mark start as visited
+        visited[0] = true;
+
+        // while loop
+        int position = 1;
+        while (position >= 1) {
+            int current = hamiltonianPath.get(position - 1);
+            boolean found = false;
+
+            // for each neighbour in current vertex key:value set
+            for (int next : graph.get(current)) {
+                // if unvisited neighbour
+                if (!visited[next]) {
+                    // add to path
+                    hamiltonianPath.add(next);
+                    // mark as visited
+                    visited[next] = true;
+                    found = true;
+                    position++;
+                    break;
+                }
+            }
+            if (!found) {
+                // no neighbour found
+                if (position == numVertices) {
+                    // if all vertices visited
+                    int last = hamiltonianPath.get(hamiltonianPath.size() - 1);
+                    if (graph.get(last).contains(hamiltonianPath.get(0))) {
+                        return hamiltonianPath.toArray(new String[0]);
+                    }
+                }
+                // remove last vertex from path
+                visited[hamiltonianPath.remove(position - 1)] = false;
+                position--;
+
+            }
+        }
+        return Collections.emptyList().toArray(new String[0]);
     }
 
     /**
@@ -121,11 +198,45 @@ public class MyCITS2200Project {
      */
     public String[] getCenters() {
         // Implement the algorithm to find the centers
+        // list for center vertices
+        List<Integer> centers = new ArrayList<Integer>();
+        // list of vertices
+        Set<Integer> vertices = graph.keySet();
 
-        // 4 is a placeholder TODO: fix
-        String[] result = new String[numVertices];
+        // for every vertex compute max distance to any other vertex
+        // add it to to centers if empty
+        // if eccentricity is less than current center, clear centers and add vertex
+        // if eccentricity is equal to current center, add vertex
 
-        return result;
+        int minEccentricity = Integer.MAX_VALUE;
+
+        for (int vertex : vertices) {
+            int eccentricity = 0;
+            Set<Integer> visited = new HashSet<Integer>();
+            Queue<Integer> queue = new LinkedList<Integer>();
+            queue.offer(vertex);
+            visited.add(vertex);
+
+            while (!queue.isEmpty()) {
+                int current = queue.poll();
+                for (int neighbour : graph.get(current)) {
+                    if (!visited.contains(neighbour)) {
+                        queue.offer(neighbour);
+                        visited.add(neighbour);
+                        int newDistance = eccentricity + 1;
+                        eccentricity = (eccentricity > newDistance) ? eccentricity : newDistance;
+                    }
+                }
+            }
+            if (eccentricity < minEccentricity) {
+                minEccentricity = eccentricity;
+                centers.clear();
+                centers.add(vertex);
+            } else if (eccentricity == minEccentricity) {
+                centers.add(vertex);
+            }
+        }
+        return centers.stream().map(String::valueOf).toArray(String[]::new);
     }
 
     public String[][] getStronglyConnectedComponents() {
