@@ -66,6 +66,9 @@ public class MyCITS2200Project {
             temp.add(idURLTo);
             graph.put(idURLFrom, temp);
         }
+        if (graph.containsKey(idURLFrom)) {
+            graph.get(idURLFrom).add(idURLTo);
+        }
     }
 
     private void addToTransGraph(String from, String to) {
@@ -76,6 +79,9 @@ public class MyCITS2200Project {
             List<Integer> temp2 = new LinkedList<>();
             temp2.add(idURLTo);
             transGraph.put(idURLFrom, temp2);
+        }
+        if (transGraph.containsKey(idURLFrom)) {
+            transGraph.get(idURLFrom).add(idURLTo);
         }
     }
 
