@@ -7,7 +7,6 @@ public class MyCITS2200Project {
     private int numVertices; // number of vertices
     private Map<Integer, List<Integer>> graph;
     private Map<Integer, List<Integer>> transGraph; // Reverse direction of adj for Kosaraju's algorithm in
-                                                    // stronglyConnectedComponent()
     private ArrayList<String> urlArray; // Array of URL (vertices)
     private HashMap<String, Integer> urlKey; // Key = URL, value = index in urlArray
     /*
@@ -31,9 +30,10 @@ public class MyCITS2200Project {
 
     /* ToDo javadocs */
     public void addEdge(String urlFrom, String urlTo) {
-        // Add the edge to the graph assuming both vertices are not in the graph
-        addVertex(urlFrom);
-        addVertex(urlTo);
+
+        // Add the edge to Map
+        addVert(urlFrom);
+        addVert(urlTo);
 
         // Create the edge in normal graph
         addToGraph(urlFrom, urlTo);
@@ -42,9 +42,9 @@ public class MyCITS2200Project {
         addToTransGraph(urlTo, urlFrom);
     }
 
-    private void addVertex(String v) {
+    private void addVert(String v) {
         /**
-         * Check if vertix exist in the graph
+         * Check if vertex exist in the graph
          * If not in graph, add to graph
          */
 
@@ -80,12 +80,12 @@ public class MyCITS2200Project {
     }
 
     /**
-     * Finds the shorest path in number of links between two pages.
+     * Finds the shortest path in number of links between two pages.
      * If there is no path, returns -1.
      * 
      * @param urlFrom the URL where the path should start.
      * @param urlTo   the URL where the path should end.
-     * @return the legnth of the shorest path in number of links followed.
+     * @return the length of the shortest path in number of links followed.
      */
     public int getShortestPath(String urlFrom, String urlTo) {
         // Implement the shortest path algorithm
@@ -138,8 +138,8 @@ public class MyCITS2200Project {
         // Implement the Kosaraju-Shamir algorithm
         // Perform the first depth-first search (DFS)
         for (int urlID : graph.keySet()) {
-            if(!visited[urlID]){
-                firstDFS(urlID,stack,visited);
+            if (!visited[urlID]) {
+                firstDFS(urlID, stack, visited);
             }
         }
 
@@ -149,7 +149,7 @@ public class MyCITS2200Project {
         // Perform the second depth first search on the transposed graph
         // Get strongly connected components
         List<List<Integer>> sccList = new ArrayList<>();
-        while (!stack.isEmpty()){
+        while (!stack.isEmpty()) {
             int current = stack.pop();
             if (!visited[current]) {
                 List<Integer> scc = new ArrayList<>();
@@ -166,8 +166,8 @@ public class MyCITS2200Project {
             for (int j = 0; j < scc.size(); j++) {
                 int urlID = scc.get(j);
                 result[i][j] = urlArray.get(urlID);
-                }
             }
+        }
         return result;
     }
 
@@ -175,10 +175,10 @@ public class MyCITS2200Project {
         visited[vertex] = true;
         List<Integer> neighbours = graph.get(vertex);
 
-        if (neighbours != null){
-            for (int i:neighbours){
-                if(!visited[i]){
-                    firstDFS(i,stack,visited);
+        if (neighbours != null) {
+            for (int i : neighbours) {
+                if (!visited[i]) {
+                    firstDFS(i, stack, visited);
                 }
             }
         }
@@ -189,7 +189,7 @@ public class MyCITS2200Project {
         visited[vertex] = true;
         scc.add(vertex);
         List<Integer> neighbours = transGraph.get(vertex);
-    
+
         if (neighbours != null) {
             for (int i : neighbours) {
                 if (!visited[i]) {
