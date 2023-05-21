@@ -14,9 +14,6 @@ public class InterfaceTesting {
      * ^= is bitwise XOR assignment
      */
 
-    /**
-     * Class constructor for interfaceTesting
-     */
     public void interfaceTesting() {
         graph = new HashMap<String, List<String>>();
     }
@@ -235,26 +232,25 @@ public class InterfaceTesting {
     }
 
     public static void main(String[] args) {
-        // test the functions on instance of the class
-        InterfaceTesting interfaceTesting = new InterfaceTesting();
+        // instance of the class
+        InterfaceTesting test = new InterfaceTesting();
+        // hashmap representing adjacency list
+        HashMap<String, List<String>> graph = new HashMap<>();
 
-        // ADD EDGES METHOD addEdge(String urlFrom, String urlTo)
-        interfaceTesting.addEdge("A", "B");
-        interfaceTesting.addEdge("A", "C");
+        // addEdge(String urlFrom, String urlTo)
+        // test.addEdge(graph, "A", "B");
+        System.out.println("addEdge test:" + "\n" + graph);
 
-        /*
-         * // Get the strongly connected components
-         * String[][] components = graph.getStronglyConnectedComponents();
-         * // Print the components
-         * for (String[] component : components) {
-         * System.out.println(Arrays.toString(component));
-         * }
-         * 
-         * // Get the Hamiltonian path
-         * String[] path = graph.getHamiltonianPath();
-         * // Print the path
-         * System.out.println(Arrays.toString(path));
-         */
+        // String[] getCenters()
+        System.out.println("getCenters test:" + "\n");
 
+        // String[][] getStronglyConnectedComponents()
+        System.out.println("getStronglyConnectedComponents test:" + "\n");
+
+        // getShortestPath(String urlFrom, String urlTo)
+        System.out.println("getShortestPath test:" + "\n");
+
+        // String[] getHamiltonianPath()
+        System.out.println("getHamiltonianPath test:" + "\n");
     }
 }
