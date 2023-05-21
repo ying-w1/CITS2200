@@ -14,8 +14,8 @@ public class InterfaceTesting {
      * ^= is bitwise XOR assignment
      */
 
-    public void interfaceTesting() {
-        graph = new HashMap<String, List<String>>();
+    public InterfaceTesting() {
+        graph = new HashMap<>();
     }
 
     /**
@@ -31,6 +31,7 @@ public class InterfaceTesting {
      */
     public void addEdge(String urlFrom, String urlTo) {
         if (!graph.containsKey(urlFrom)) {
+            System.out.println("Graph does not contain key");
             graph.put(urlFrom, new ArrayList<>());
         }
         // get element with associated key, add urlTo to the list
@@ -231,15 +232,30 @@ public class InterfaceTesting {
         return hamiltonianPath.toArray(new String[numberOfVertices]);
     }
 
+    /**
+     * test print adjacency list
+     */
+    public void printAdjacencyList() {
+        for (Map.Entry<String, List<String>> entry : graph.entrySet()) {
+            String vertex = entry.getKey();
+            List<String> neighbors = entry.getValue();
+            System.out.print(vertex + " -> ");
+            for (String neighbor : neighbors) {
+                System.out.print(neighbor + " ");
+            }
+            System.out.println();
+        }
+    }
+
     public static void main(String[] args) {
         // instance of the class
-        InterfaceTesting test = new InterfaceTesting();
-        // hashmap representing adjacency list
-        HashMap<String, List<String>> graph = new HashMap<>();
+        InterfaceTesting graph = new InterfaceTesting();
 
         // addEdge(String urlFrom, String urlTo)
-        // test.addEdge(graph, "A", "B");
-        System.out.println("addEdge test:" + "\n" + graph);
+        graph.addEdge("A", "B");
+        graph.addEdge("A", "C");
+        graph.addEdge("B", "C");
+        graph.addEdge("C", "A");
 
         // String[] getCenters()
         System.out.println("getCenters test:" + "\n");
@@ -252,5 +268,10 @@ public class InterfaceTesting {
 
         // String[] getHamiltonianPath()
         System.out.println("getHamiltonianPath test:" + "\n");
+
+        // Print adjacency list
+        System.out.println("Adjacency list:" + "\n");
+        graph.printAdjacencyList();
+
     }
 }
