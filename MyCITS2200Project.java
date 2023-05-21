@@ -29,11 +29,11 @@ public class MyCITS2200Project {
     }
 
     /**
-         * Check if vertex exist in the graph
-         * If not in graph, add to graph
-         */
+     * Check if vertex exist in the graph
+     * If not in graph, add to graph
+     */
     public void addEdge(String urlFrom, String urlTo) {
-        // Add the edge to our map & array  
+        // Add the edge to our map & array
         addVert(urlFrom);
         addVert(urlTo);
 
