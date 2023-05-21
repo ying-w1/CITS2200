@@ -123,7 +123,40 @@ public class interfaceTesting {
     public String[][] getStronglyConnectedComponents() {
         // Tarjan's algorithm for DFS
 
-        return null;
+        // initialise variables
+        Queue<String> queue = new LinkedList<>();
+        HashSet<String> visited = new HashSet<>();
+        List<List<String>> components = new ArrayList<>();
+
+        for (String url : graph.keySet()) {
+            if (!visited.contains(url)) {
+                List<String> component = new ArrayList<>();
+                queue.offer(url);
+                visited.add(url);
+
+                while (!queue.isEmpty()) {
+                    String current = queue.poll();
+                    component.add(current);
+
+                    List<String> neighbours = graph.get(current);
+                    if (neighbours != null) {
+                        for (String neighbour : neighbours) {
+                            if (!visited.contains(neighbour)) {
+                                queue.offer(neighbour);
+                                visited.add(neighbour);
+                            }
+                        }
+                    }
+                }
+                components.add(component);
+            }
+        }
+        String[][] componentArray = new String[components.size()][];
+        for (int i = 0; i < components.size(); i++) {
+            List<String> component = components.get(i);
+            componentArray[i] = component.toArray(new String[component.size()]);
+        }
+        return componentArray;
     }
 
     /**
