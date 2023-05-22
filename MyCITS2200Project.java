@@ -57,7 +57,7 @@ public class MyCITS2200Project {
     private void addToGraph(String from, String to) {
         int idURLFrom = urlKey.get(from);
         int idURLTo = urlKey.get(to);
-    
+
         if (!graph.containsKey(idURLFrom)) {
             graph.put(idURLFrom, new LinkedList<>());
         }
@@ -70,7 +70,7 @@ public class MyCITS2200Project {
     private void addToTransGraph(String from, String to) {
         int idURLFrom = urlKey.get(from);
         int idURLTo = urlKey.get(to);
-    
+
         if (!transGraph.containsKey(idURLFrom)) {
             transGraph.put(idURLFrom, new LinkedList<>());
         }
@@ -101,7 +101,7 @@ public class MyCITS2200Project {
         // enqueue the starting vertex
         queue.add(urlKey.get(urlFrom));
         // mark the starting vertex as visited
-        distance[urlKey.get(urlFrom)] = -1;
+        distance[urlKey.get(urlFrom)] = 0;
 
         // while the queue is not empty
         while (!queue.isEmpty()) {
@@ -198,50 +198,71 @@ public class MyCITS2200Project {
      *         centers.
      */
     public String[] getCenters() {
-        // Implement the algorithm to find the centers
-        // list for center vertices
+        // initialise variables
         List<Integer> centers = new ArrayList<Integer>();
-        // list of vertices
         Set<Integer> vertices = graph.keySet();
+        int minimumEccentricity = Integer.MAX_VALUE;
 
-        // for every vertex compute max distance to any other vertex
-        // add it to to centers if empty
-        // if eccentricity is less than current center, clear centers and add vertex
-        // if eccentricity is equal to current center, add vertex
-
-        int minEccentricity = Integer.MAX_VALUE;
-
+        // BFS for all vertices
         for (int vertex : vertices) {
+            // test print
+            System.out.println("vertex: " + vertex);
+            // initialise variables for for every vertex
             int eccentricity = 0;
             Set<Integer> visited = new HashSet<Integer>();
             Queue<Integer> queue = new LinkedList<Integer>();
+            // add vertex to queue and visited
             queue.offer(vertex);
             visited.add(vertex);
 
             while (!queue.isEmpty()) {
                 int current = queue.poll();
+                // test print
+                System.out.println("current: " + current);
+
                 for (int neighbour : graph.get(current)) {
+                    // if not visited
                     if (!visited.contains(neighbour)) {
                         queue.offer(neighbour);
                         visited.add(neighbour);
-                        int newDistance = eccentricity + 1;
-                        eccentricity = (eccentricity > newDistance) ? eccentricity : newDistance;
+                        eccentricity++;
+                        // test print
+                        System.out.println("eccentricity: " + eccentricity);
+                        System.out.println("neighbour: " + neighbour);
                     }
                 }
             }
-            if (eccentricity < minEccentricity) {
-                minEccentricity = eccentricity;
+            if (eccentricity < minimumEccentricity) {
+                // test print
+                System.out.println("minimumEccentricity: " + minimumEccentricity);
+                System.out.println("eccentricity: " + eccentricity);
+
+                // new minimum eccentricity
+                minimumEccentricity = eccentricity;
+                // test print
+                System.out.println("number centers BEFORE clear: " + "\n");
+                System.out.println(centers.size());
                 centers.clear();
+                // test print
+                System.out.println("number centers AFTER clear: " + "\n");
+                System.out.println(centers.size());
+
                 centers.add(vertex);
-            } else if (eccentricity == minEccentricity) {
+            } else if (eccentricity == minimumEccentricity) {
                 centers.add(vertex);
             }
         }
-        return centers.stream().map(String::valueOf).toArray(String[]::new);
+        // List<Integer> to String[]
+        String[] centerArray = new String[centers.size()];
+        for (int i = 0; i < centers.size(); i++) {
+            centerArray[i] = String.valueOf(centers.get(i));
+        }
+
+        return centerArray;
     }
 
     public String[][] getStronglyConnectedComponents() {
-        // Set up necesary variables
+        // Set up necessary variables
         boolean[] visited = new boolean[urlArray.size()];
         Stack<Integer> stack = new Stack<Integer>();
         String[][] result;
@@ -308,6 +329,36 @@ public class MyCITS2200Project {
                     secondDFS(i, visited, scc);
                 }
             }
+        }
+    }
+
+    public static void main(String[] args) {
+        // project instance
+        MyCITS2200Project project = new MyCITS2200Project();
+
+        project.addEdge("0", "1");
+        project.addEdge("0", "3");
+        project.addEdge("1", "0");
+        project.addEdge("1", "3");
+        project.addEdge("1", "4");
+        project.addEdge("2", "3");
+        project.addEdge("2", "5");
+        project.addEdge("2", "6");
+        project.addEdge("3", "0");
+        project.addEdge("3", "1");
+        project.addEdge("3", "2");
+        project.addEdge("3", "4");
+        project.addEdge("4", "1");
+        project.addEdge("4", "3");
+        project.addEdge("5", "2");
+        project.addEdge("5", "6");
+        project.addEdge("6", "2");
+        project.addEdge("6", "5");
+
+        // print functions array
+        String[] s = project.getCenters();
+        for (String i : s) {
+            System.out.println(i);
         }
     }
 }
