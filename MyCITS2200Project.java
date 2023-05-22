@@ -203,52 +203,56 @@ public class MyCITS2200Project {
         Set<Integer> vertices = graph.keySet();
         int minimumEccentricity = Integer.MAX_VALUE;
 
-        // BFS for all vertices
+        // BFS for ALL vertices
         for (int vertex : vertices) {
-            // test print
-            System.out.println("vertex: " + vertex);
-            // initialise variables for for every vertex
+            // initialise variables
             int eccentricity = 0;
             Set<Integer> visited = new HashSet<Integer>();
             Queue<Integer> queue = new LinkedList<Integer>();
-            // add vertex to queue and visited
+            // add vertex to queue and visited sets
             queue.offer(vertex);
             visited.add(vertex);
 
             while (!queue.isEmpty()) {
-                int current = queue.poll();
-                // test print
-                System.out.println("current: " + current);
-
-                for (int neighbour : graph.get(current)) {
-                    // if not visited
-                    if (!visited.contains(neighbour)) {
-                        queue.offer(neighbour);
-                        visited.add(neighbour);
-                        eccentricity++;
-                        // test print
-                        System.out.println("eccentricity: " + eccentricity);
-                        System.out.println("neighbour: " + neighbour);
+                int size = queue.size();
+                for (int i = 0; i < size; i++) {
+                    int current = queue.poll();
+                    for (int neighbour : graph.get(current)) {
+                        if (!visited.contains(neighbour)) {
+                            queue.offer(neighbour);
+                            visited.add(neighbour);
+                        }
                     }
                 }
+                // OLD, WRONG CODE JUST INCASE I BREAK SOMETHING
+                // while (!queue.isEmpty()) {
+                // int current = queue.poll();
+                // // test print
+                // System.out.println("current: " + current);
+
+                // for (int neighbour : graph.get(current)) {
+                // // if not visited
+                // if (!visited.contains(neighbour)) {
+                // queue.offer(neighbour);
+                // visited.add(neighbour);
+                // // test print
+                // System.out.println("neighbour: " + neighbour);
+
+                // }
+                // }
+                eccentricity++;
             }
+
             if (eccentricity < minimumEccentricity) {
-                // test print
-                System.out.println("minimumEccentricity: " + minimumEccentricity);
-                System.out.println("eccentricity: " + eccentricity);
-
-                // new minimum eccentricity
+                // found new minimum eccentricity
                 minimumEccentricity = eccentricity;
-                // test print
-                System.out.println("number centers BEFORE clear: " + "\n");
-                System.out.println(centers.size());
+                // clear previous
                 centers.clear();
-                // test print
-                System.out.println("number centers AFTER clear: " + "\n");
-                System.out.println(centers.size());
-
+                // add new center
                 centers.add(vertex);
-            } else if (eccentricity == minimumEccentricity) {
+            }
+            // same eccentricity as minimum, add to list
+            else if (eccentricity == minimumEccentricity) {
                 centers.add(vertex);
             }
         }
@@ -336,26 +340,38 @@ public class MyCITS2200Project {
         // project instance
         MyCITS2200Project project = new MyCITS2200Project();
 
+        /*
+         * SINGLE CENTER = 0
+         * 0: 1, 2, 3, 4, 5
+         * 1: 0, 2
+         * 2: 0, 1, 3
+         * 3: 0, 2
+         * 4: 0, 5
+         * 5: 0, 4, 6
+         * 6: 5
+         */
+
         project.addEdge("0", "1");
+        project.addEdge("0", "2");
         project.addEdge("0", "3");
+        project.addEdge("0", "4");
+        project.addEdge("0", "5");
         project.addEdge("1", "0");
-        project.addEdge("1", "3");
-        project.addEdge("1", "4");
+        project.addEdge("1", "2");
+        project.addEdge("2", "0");
+        project.addEdge("2", "1");
         project.addEdge("2", "3");
-        project.addEdge("2", "5");
-        project.addEdge("2", "6");
         project.addEdge("3", "0");
-        project.addEdge("3", "1");
         project.addEdge("3", "2");
-        project.addEdge("3", "4");
-        project.addEdge("4", "1");
-        project.addEdge("4", "3");
-        project.addEdge("5", "2");
-        project.addEdge("5", "6");
-        project.addEdge("6", "2");
+        project.addEdge("4", "0");
+        project.addEdge("4", "5");
+        project.addEdge("6", "0");
+        project.addEdge("6", "4");
+        project.addEdge("6", "6");
         project.addEdge("6", "5");
 
         // print functions array
+        System.out.println("Vertices in center of graph:");
         String[] s = project.getCenters();
         for (String i : s) {
             System.out.println(i);
