@@ -57,29 +57,27 @@ public class MyCITS2200Project {
     private void addToGraph(String from, String to) {
         int idURLFrom = urlKey.get(from);
         int idURLTo = urlKey.get(to);
-
+    
         if (!graph.containsKey(idURLFrom)) {
-            List<Integer> temp = new LinkedList<>();
-            temp.add(idURLTo);
-            graph.put(idURLFrom, temp);
+            graph.put(idURLFrom, new LinkedList<>());
         }
-        if (graph.containsKey(idURLFrom)) {
-            graph.get(idURLFrom).add(idURLTo);
+        if (!graph.containsKey(idURLTo)) {
+            graph.put(idURLTo, new LinkedList<>());
         }
+        graph.get(idURLFrom).add(idURLTo);
     }
 
     private void addToTransGraph(String from, String to) {
         int idURLFrom = urlKey.get(from);
         int idURLTo = urlKey.get(to);
-
+    
         if (!transGraph.containsKey(idURLFrom)) {
-            List<Integer> temp2 = new LinkedList<>();
-            temp2.add(idURLTo);
-            transGraph.put(idURLFrom, temp2);
+            transGraph.put(idURLFrom, new LinkedList<>());
         }
-        if (transGraph.containsKey(idURLFrom)) {
-            transGraph.get(idURLFrom).add(idURLTo);
+        if (!transGraph.containsKey(idURLTo)) {
+            transGraph.put(idURLTo, new LinkedList<>());
         }
+        transGraph.get(idURLFrom).add(idURLTo);
     }
 
     /**
