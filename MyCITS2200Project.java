@@ -138,56 +138,111 @@ public class MyCITS2200Project {
      */
     public String[] getHamiltonianPath() {
 
-        int n = graph.size(); // Number of vertices
-        boolean[][] prev = new boolean[n][n]; // Previous vertex in the path
+        // int n = urlArray.size(); // Number of vertices
+        // boolean[][] prev = new boolean[n][n]; // Previous vertex in the path
 
-        // Iterate over all subsets of vertices
-        for (int subset = 1; subset < (int) Math.pow(2, n); subset++) {
-            for (int i = 0; i < n; i++) {
-                if (((subset / (int) Math.pow(2, i)) % 2) == 1) {
-                    for (int j : graph.get(i)) {
-                        if ((((subset / (int) Math.pow(2, j)) % 2) == 1) && !prev[i][j]) {
-                            prev[i][j] = true;
+        // // Iterate over all subsets of vertices
+        // for (int subset = 1; subset < (int) Math.pow(2, n); subset++) {
+        // System.out.println(subset);
+
+        // for (int i = 0; i < n; i++) {
+        // if (((subset / (int) Math.pow(2, i)) % 2) == 1) {
+        // for (int j : graph.get(i)) {
+        // if ((((subset / (int) Math.pow(2, j)) % 2) == 1) && !prev[i][j]) {
+        // prev[i][j] = true;
+        // }
+        // }
+        // }
+        // }
+        // }
+
+        // // Find the starting vertex for the Hamiltonian path
+        // int start = 0;
+        // int subset = (int) Math.pow(2, n) - 1;
+        // for (int i = 0; i < n; i++) {
+        // if (prev[i][subset]) {
+        // start = i;
+        // break;
+        // }
+        // }
+
+        // // Reconstruct the Hamiltonian path
+        // List<Integer> path = new ArrayList<>();
+        // subset = (int) Math.pow(2, n) - 1;
+        // int current = start;
+        // while (subset != 0) {
+        // path.add(current);
+        // for (int i = 0; i < n; i++) {
+        // if (prev[current][i] && (((subset / (int) Math.pow(2, i)) % 2) == 1)) {
+        // subset = subset - (int) Math.pow(2, current);
+        // current = i;
+        // break;
+        // }
+        // }
+        // }
+        // path.add(start);
+
+        // // Convert the path to a String array
+        // String[] pathArray = new String[path.size()];
+        // for (int i = 0; i < path.size(); i++) {
+        // pathArray[i] = String.valueOf(path.get(i));
+        // }
+
+        // return pathArray;
+        // ------------------------------------------------
+        // Number of vertices
+        int numURLs = urlArray.size();
+
+        // Build adjacency matrix from the list
+        int matrix[][] = new int[numURLs][numURLs];
+        for (int i = 0; i < numURLs; i++) {
+            List<Integer> neighbors = graph.get(i);
+            for (int j : neighbors) {
+                matrix[i][j] = 1;
+            }
+        }
+
+        String dp[][] = new String[numURLs][(1 << numURLs)];
+        // Set all dp[i][(1 << i)] to corresponding vertices
+        for (int i = 0; i < numURLs; i++) {
+            dp[i][(1 << i)] = String.valueOf(i);
+        }
+
+        // Iterate subset of vertices
+        for (int i = 0; i < (1 << numURLs); i++) {
+            for (int j = 0; j < numURLs; j++) {
+
+                // If j-th vertex is in current subset
+                if ((i & (1 << j)) != 0) {
+
+                    // neighbor k present in current subset
+                    for (int k = 0; k < numURLs; k++) {
+                        if ((i & (1 << k)) != 0 &&
+                                matrix[k][j] == 1 && j != k &&
+                                dp[k][i ^ (1 << j)] != null) {
+                            // include the current vertex in dp[j][i]
+                            dp[j][i] = dp[k][i ^ (1 << j)] + " " + j;
+                            break;
                         }
                     }
                 }
             }
         }
 
-        // Find the starting vertex for the Hamiltonian path
-        int start = 0;
-        int subset = (int) Math.pow(2, n) - 1;
-        for (int i = 0; i < n; i++) {
-            if (prev[i][subset]) {
-                start = i;
-                break;
+        // iterate vertices
+        for (int i = 0; i < numURLs; i++) {
+
+            // found Hamiltonian path
+            if (dp[i][(1 << numURLs) - 1] != null) {
+                // Split the string to get an array of vertices
+                String[] path = dp[i][(1 << numURLs) - 1].split(" ");
+                return path;
             }
         }
 
-        // Reconstruct the Hamiltonian path
-        List<Integer> path = new ArrayList<>();
-        subset = (int) Math.pow(2, n) - 1;
-        int current = start;
-        while (subset != 0) {
-            path.add(current);
-            for (int i = 0; i < n; i++) {
-                if (prev[current][i] && (((subset / (int) Math.pow(2, i)) % 2) == 1)) {
-                    subset = subset - (int) Math.pow(2, current);
-                    current = i;
-                    break;
-                }
-            }
-        }
-        path.add(start);
-
-        // Convert the path to a String array
-        String[] pathArray = new String[path.size()];
-        for (int i = 0; i < path.size(); i++) {
-            pathArray[i] = String.valueOf(path.get(i));
-        }
-
-        return pathArray;
-
+        // no path found, empty array
+        String[] path = new String[0];
+        return path;
     }
 
     /**
@@ -328,31 +383,26 @@ public class MyCITS2200Project {
 
         // HAMILTONIAN PATH
 
-        project.addEdge("1", "2");
+        // hamiltonian
+        // 0: [1, 2, 3]
+        // 1: [0, 2, 4]
+        // 2: [0, 1, 3, 4]
+        // 3: [0, 2]
+        // 4: [1, 2]
+
+        // not hamiltonian = empty array
+        project.addEdge("1", "3");
         project.addEdge("2", "3");
-        project.addEdge("2", "5");
         project.addEdge("3", "4");
-        project.addEdge("4", "5");
+        project.addEdge("4", "6");
+        project.addEdge("6", "5");
+        project.addEdge("5", "3");
 
-        System.out.print(project.getHamiltonianPath());
-
-        // // MULTIPLE CENTERS EXAMPLE WORKS
-        // // only getting "6", not getting "5"
-
-        // project.addEdge("1", "2");
-        // project.addEdge("1", "3");
-        // project.addEdge("2", "4");
-        // project.addEdge("3", "4");
-        // project.addEdge("4", "5");
-        // project.addEdge("4", "6");
-        // project.addEdge("5", "7");
-        // project.addVert("7");
-
-        // // print functions array
-        // System.out.println("Center Vertices:");
-        // String[] s = project.getCenters();
-        // for (String i : s) {
-        // System.out.println(i);
-        // }
+        // print functions array
+        System.out.println("hamiltonian:");
+        String[] s = project.getHamiltonianPath();
+        for (String i : s) {
+            System.out.println(i);
+        }
     }
 }
