@@ -325,10 +325,16 @@ public class MyCITS2200Project {
         MyCITS2200Project project = new MyCITS2200Project();
 
         // MULTIPLE CENTERS EXAMPLE WORKS
-        project.addEdge("5", "4");
-        project.addEdge("5", "3");
-        project.addEdge("4", "2");
-        project.addEdge("3", "1");
+        // only getting "6", not getting "5"
+
+        project.addEdge("1", "2");
+        project.addEdge("1", "3");
+        project.addEdge("2", "4");
+        project.addEdge("3", "4");
+        project.addEdge("4", "5");
+        project.addEdge("4", "6");
+        project.addEdge("5", "7");
+        project.addVert("7");
 
         // print functions array
         System.out.println("Center Vertices:");
