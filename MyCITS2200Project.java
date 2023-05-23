@@ -193,6 +193,13 @@ public class MyCITS2200Project {
         // Number of vertices
         int numURLs = urlArray.size();
 
+        /*
+         * foreach vertex : graph/adacencyList
+         * 
+         * iterate NEIGHBOURS of vertex
+         * for (int neighbor : adjacencyList.get(vertex)) { ... } to perform operations
+         * on each neighbor.
+         */
         // Build adjacency matrix from the list
         int matrix[][] = new int[numURLs][numURLs];
         for (int i = 0; i < numURLs; i++) {
