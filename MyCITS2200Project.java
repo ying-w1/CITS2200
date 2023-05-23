@@ -324,70 +324,12 @@ public class MyCITS2200Project {
         // project instance
         MyCITS2200Project project = new MyCITS2200Project();
 
-        /*
-         * SINGLE CENTER = 0
-         * 0: 1, 2, 3, 4, 5
-         * 1: 0, 2
-         * 2: 0, 1, 3
-         * 3: 0, 2
-         * 4: 0, 5
-         * 5: 0, 4, 6
-         * 6: 5
-         * 
-         * CENTER = 3
-         * 0: 1, 3, 5
-         * 1: 0, 2, 3
-         * 2: 1, 3, 4
-         * 3: 0, 1, 2, 4
-         * 4: 2, 3, 5, 6
-         * 5: 0, 3, 4, 6
-         * 6: 4, 5
-         */
-        project.addEdge("0", "1");
-        project.addEdge("0", "3");
-        project.addEdge("0", "5");
-        project.addEdge("1", "0");
         project.addEdge("1", "2");
-        project.addEdge("1", "3");
-        project.addEdge("2", "1");
         project.addEdge("2", "3");
-        project.addEdge("2", "4");
-        project.addEdge("3", "0");
-        project.addEdge("3", "1");
-        project.addEdge("3", "2");
         project.addEdge("3", "4");
-        project.addEdge("4", "2");
-        project.addEdge("4", "3");
-        project.addEdge("4", "5");
-        project.addEdge("4", "6");
-        project.addEdge("5", "0");
-        project.addEdge("5", "3");
-        project.addEdge("5", "4");
-        project.addEdge("5", "6");
-        project.addEdge("6", "4");
-        project.addEdge("6", "5");
-
-        // project.addEdge("0", "1");
-        // project.addEdge("0", "2");
-        // project.addEdge("0", "3");
-        // project.addEdge("0", "4");
-        // project.addEdge("0", "5");
-        // project.addEdge("1", "0");
-        // project.addEdge("1", "2");
-        // project.addEdge("2", "0");
-        // project.addEdge("2", "1");
-        // project.addEdge("2", "3");
-        // project.addEdge("3", "0");
-        // project.addEdge("3", "2");
-        // project.addEdge("4", "0");
-        // project.addEdge("4", "5");
-        // project.addEdge("5", "0");
-        // project.addEdge("5", "4");
-        // project.addEdge("5", "6");
-        // project.addEdge("6", "5");
 
         // print functions array
-        System.out.println("Vertices in center of graph:");
+        System.out.println("Center Vertices:");
         String[] s = project.getCenters();
         for (String i : s) {
             System.out.println(i);
