@@ -137,55 +137,57 @@ public class MyCITS2200Project {
      * @return a Hamiltonian path of the page graph.
      */
     public String[] getHamiltonianPath() {
-        // number vertices
-        int numVertices = urlArray.size();
-        // hamiltonianPath
-        ArrayList<Integer> hamiltonianPath = new ArrayList<Integer>();
-        // visited
-        boolean[] visited = new boolean[numVertices];
 
-        // set all vertices as not visited
-        Arrays.fill(visited, false);
-        // add start to path
-        hamiltonianPath.add(0);
-        // mark start as visited
-        visited[0] = true;
+        int n = graph.size(); // Number of vertices
+        boolean[][] prev = new boolean[n][n]; // Previous vertex in the path
 
-        // while loop
-        int position = 1;
-        while (position >= 1) {
-            int current = hamiltonianPath.get(position - 1);
-            boolean found = false;
+        // Iterate over all subsets of vertices
+        for (int subset = 1; subset < (int) Math.pow(2, n); subset++) {
+            for (int i = 0; i < n; i++) {
+                if (((subset / (int) Math.pow(2, i)) % 2) == 1) {
+                    for (int j : graph.get(i)) {
+                        if ((((subset / (int) Math.pow(2, j)) % 2) == 1) && !prev[i][j]) {
+                            prev[i][j] = true;
+                        }
+                    }
+                }
+            }
+        }
 
-            // for each neighbour in current vertex key:value set
-            for (int next : graph.get(current)) {
-                // if unvisited neighbour
-                if (!visited[next]) {
-                    // add to path
-                    hamiltonianPath.add(next);
-                    // mark as visited
-                    visited[next] = true;
-                    found = true;
-                    position++;
+        // Find the starting vertex for the Hamiltonian path
+        int start = 0;
+        int subset = (int) Math.pow(2, n) - 1;
+        for (int i = 0; i < n; i++) {
+            if (prev[i][subset]) {
+                start = i;
+                break;
+            }
+        }
+
+        // Reconstruct the Hamiltonian path
+        List<Integer> path = new ArrayList<>();
+        subset = (int) Math.pow(2, n) - 1;
+        int current = start;
+        while (subset != 0) {
+            path.add(current);
+            for (int i = 0; i < n; i++) {
+                if (prev[current][i] && (((subset / (int) Math.pow(2, i)) % 2) == 1)) {
+                    subset = subset - (int) Math.pow(2, current);
+                    current = i;
                     break;
                 }
             }
-            if (!found) {
-                // no neighbour found
-                if (position == numVertices) {
-                    // if all vertices visited
-                    int last = hamiltonianPath.get(hamiltonianPath.size() - 1);
-                    if (graph.get(last).contains(hamiltonianPath.get(0))) {
-                        return hamiltonianPath.toArray(new String[0]);
-                    }
-                }
-                // remove last vertex from path
-                visited[hamiltonianPath.remove(position - 1)] = false;
-                position--;
-
-            }
         }
-        return Collections.emptyList().toArray(new String[0]);
+        path.add(start);
+
+        // Convert the path to a String array
+        String[] pathArray = new String[path.size()];
+        for (int i = 0; i < path.size(); i++) {
+            pathArray[i] = String.valueOf(path.get(i));
+        }
+
+        return pathArray;
+
     }
 
     /**
