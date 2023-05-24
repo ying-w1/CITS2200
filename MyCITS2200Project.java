@@ -4,9 +4,8 @@ import java.util.*;
 public class MyCITS2200Project {
 
     // field variable instantiation
-    private int numVertices; // number of vertices
-    private Map<Integer, List<Integer>> graph;
-    private Map<Integer, List<Integer>> transGraph; // Reverse direction of adj for Kosaraju's algorithm in
+    private Map<String, List<String>> graph;
+    private Map<String, List<String>> transGraph; // Reverse direction of adj for Kosaraju's algorithm in
     private ArrayList<String> urlArray; // Array of URL (vertices)
     private HashMap<String, Integer> urlKey; // Key = URL, value = index in urlArray
     /*
@@ -21,9 +20,8 @@ public class MyCITS2200Project {
      * Constructor for MyCITS2200Project
      */
     public MyCITS2200Project() {
-        numVertices = 4; // temporary as an example, may not need
-        graph = new HashMap<Integer, List<Integer>>();
-        transGraph = new HashMap<Integer, List<Integer>>();
+        graph = new HashMap<String, List<String>>();
+        transGraph = new HashMap<String, List<String>>();
         urlArray = new ArrayList<String>();
         urlKey = new HashMap<String, Integer>();
     }
@@ -55,74 +53,86 @@ public class MyCITS2200Project {
     }
 
     private void addToGraph(String from, String to) {
-        int idURLFrom = urlKey.get(from);
-        int idURLTo = urlKey.get(to);
-
-        if (!graph.containsKey(idURLFrom)) {
-            graph.put(idURLFrom, new LinkedList<>());
+        if (!graph.containsKey(from)) {
+            graph.put(from, new LinkedList<>());
         }
-        if (!graph.containsKey(idURLTo)) {
-            graph.put(idURLTo, new LinkedList<>());
+        if (!graph.containsKey(to)) {
+            graph.put(to, new LinkedList<>());
         }
-        graph.get(idURLFrom).add(idURLTo);
+        graph.get(from).add(to);
     }
 
     private void addToTransGraph(String from, String to) {
-        int idURLFrom = urlKey.get(from);
-        int idURLTo = urlKey.get(to);
 
-        if (!transGraph.containsKey(idURLFrom)) {
-            transGraph.put(idURLFrom, new LinkedList<>());
+        if (!transGraph.containsKey(from)) {
+            transGraph.put(from, new LinkedList<>());
         }
-        if (!transGraph.containsKey(idURLTo)) {
-            transGraph.put(idURLTo, new LinkedList<>());
+        if (!transGraph.containsKey(to)) {
+            transGraph.put(to, new LinkedList<>());
         }
-        transGraph.get(idURLFrom).add(idURLTo);
+        transGraph.get(from).add(to);
     }
 
     /**
-     * Finds the shortest path in number of links between two pages.
-     * If there is no path, returns -1.
-     * 
-     * @param urlFrom the URL where the path should start.
-     * @param urlTo   the URL where the path should end.
-     * @return the length of the shortest path in number of links followed.
-     */
-    public int getShortestPath(String urlFrom, String urlTo) {
-        // Implement the shortest path algorithm
+ * Finds the shortest path in number of links between two pages.
+ * If there is no path, returns -1.
+ *
+ * @param urlFrom the URL where the path should start.
+ * @param urlTo   the URL where the path should end.
+ * @return the length of the shortest path in number of links followed.
+ */
+public int getShortestPath(String urlFrom, String urlTo) {
+    // Create a queue for BFS traversal
+    Queue<String> queue = new LinkedList<>();
+    // Create a visited array to keep track of visited vertices
+    boolean[] visited = new boolean[urlArray.size()];
+    // Create a distance array to store the shortest distance from the starting vertex
+    int[] distance = new int[urlArray.size()];
+    // Initialize distance array with -1 (indicating unreachable vertices)
+    Arrays.fill(distance, -1);
+    // Get the starting vertex index
+    int fromIndex = urlKey.get(urlFrom);
+    // Get the destination vertex index
+    int toIndex = urlKey.get(urlTo);
 
-        // create queue
-        Queue<Integer> queue = new LinkedList<Integer>();
-        // create array for distance
-        int[] distance = new int[urlArray.size()];
-        // set all distances to -1
-        Arrays.fill(distance, -1);
+    // Enqueue the starting vertex
+    queue.add(urlFrom);
+    // Mark the starting vertex as visited
+    visited[fromIndex] = true;
+    // Set the distance of the starting vertex to 0
+    distance[fromIndex] = 0;
 
-        // enqueue the starting vertex
-        queue.add(urlKey.get(urlFrom));
-        // mark the starting vertex as visited
-        distance[urlKey.get(urlFrom)] = 0;
+    // Perform BFS traversal
+    while (!queue.isEmpty()) {
+        // Dequeue a vertex
+        String currentUrl = queue.poll();
+        int currentIndex = urlKey.get(currentUrl);
 
-        // while the queue is not empty
-        while (!queue.isEmpty()) {
-            // dequeue a vertex
-            int current = queue.poll();
-            if (current == urlKey.get(urlTo)) {
-                // found the destination
-                return distance[current];
-            }
-            // for each neighbour in current vertex key:value set
-            for (int neighbour : graph.get(current)) {
-                // if unvisited neighbour
-                if (distance[neighbour] == -1) {
-                    distance[neighbour] = distance[current] + 1;
-                    // add to queue
-                    queue.add(neighbour);
-                }
+        // If the destination vertex is reached, return the shortest distance
+        if (currentIndex == toIndex) {
+            return distance[currentIndex];
+        }
+
+        // Iterate over the neighbours of the current vertex
+        List<String> neighbours = graph.get(currentUrl);
+        for (String neighbourUrl : neighbours) {
+            int neighbourIndex = urlKey.get(neighbourUrl);
+
+            // If the neighbour vertex is not visited
+            if (!visited[neighbourIndex]) {
+                // Mark the neighbour vertex as visited
+                visited[neighbourIndex] = true;
+                // Update the distance of the neighbour vertex
+                distance[neighbourIndex] = distance[currentIndex] + 1;
+                // Enqueue the neighbour vertex
+                queue.add(neighbourUrl);
             }
         }
-        return distance[urlKey.get(urlTo)];
     }
+
+    // If the destination vertex is not reachable, return -1
+    return -1;
+}
 
     /**
      * Finds a Hamiltonian path in the page graph. There may be many
@@ -262,26 +272,22 @@ public class MyCITS2200Project {
      *         centers.
      */
     public String[] getCenters() {
-        // initialise variables
-        List<Integer> centers = new ArrayList<Integer>();
-        Set<Integer> vertices = graph.keySet();
+        List<String> centers = new ArrayList<>();
+        Set<String> vertices = graph.keySet();
         int minimumEccentricity = Integer.MAX_VALUE;
-
-        // BFS for ALL vertices
-        for (int vertex : vertices) {
-            // initialise variables
+    
+        for (String vertex : vertices) {
             int eccentricity = 0;
-            Set<Integer> visited = new HashSet<Integer>();
-            Queue<Integer> queue = new LinkedList<Integer>();
-            // add vertex to queue and visited sets
+            Set<String> visited = new HashSet<>();
+            Queue<String> queue = new LinkedList<>();
             queue.offer(vertex);
             visited.add(vertex);
-
+    
             while (!queue.isEmpty()) {
                 int size = queue.size();
                 for (int i = 0; i < size; i++) {
-                    int current = queue.poll();
-                    for (int neighbour : graph.get(current)) {
+                    String current = queue.poll();
+                    for (String neighbour : graph.get(current)) {
                         if (!visited.contains(neighbour)) {
                             queue.offer(neighbour);
                             visited.add(neighbour);
@@ -290,59 +296,50 @@ public class MyCITS2200Project {
                 }
                 eccentricity++;
             }
-
+    
             if (eccentricity < minimumEccentricity) {
-                // found new minimum eccentricity
                 minimumEccentricity = eccentricity;
-                // clear previous
                 centers.clear();
-                // add new center
                 centers.add(vertex);
-            }
-            // same eccentricity as minimum, add to list
-            else if (eccentricity == minimumEccentricity) {
+            } else if (eccentricity == minimumEccentricity) {
                 centers.add(vertex);
             }
         }
-        // List<Integer> to String[]
-        String[] centerArray = new String[centers.size()];
-        for (int i = 0; i < centers.size(); i++) {
-            centerArray[i] = String.valueOf(centers.get(i));
-        }
-
-        return centerArray;
+    
+        return centers.toArray(new String[0]);
     }
 
     public String[][] getStronglyConnectedComponents() {
         // Set up necessary variables
         boolean[] visited = new boolean[urlArray.size()];
-        Stack<Integer> stack = new Stack<Integer>();
+        Stack<String> stack = new Stack<>();
         String[][] result;
-        Arrays.fill(visited, Boolean.FALSE);
-
-        // Implement the Kosaraju-Shamir algorithm
+        Arrays.fill(visited, false);
+    
         // Perform the first depth-first search (DFS)
-        for (int urlID : graph.keySet()) {
-            if (!visited[urlID]) {
-                firstDFS(urlID, stack, visited);
+        for (String url : graph.keySet()) {
+            int urlID = urlKey.get(url);
+            if (!visited[urlID]) { // Check if visited
+                firstDFS(url, stack, visited);
             }
         }
-
+    
         // Reset the visited array in preparation for the second DFS
-        Arrays.fill(visited, Boolean.FALSE);
-
-        // Perform the second depth first search on the transposed graph
+        Arrays.fill(visited, false);
+    
+        // Perform the second depth-first search on the transposed graph
         // Get strongly connected components
         List<List<Integer>> sccList = new ArrayList<>();
         while (!stack.isEmpty()) {
-            int current = stack.pop();
-            if (!visited[current]) {
+            String current = stack.pop();
+            int currentID = urlKey.get(current);
+            if (!visited[currentID]) {
                 List<Integer> scc = new ArrayList<>();
                 secondDFS(current, visited, scc);
                 sccList.add(scc);
             }
         }
-
+    
         // Convert List of strongly connected components to String[][]
         result = new String[sccList.size()][];
         for (int i = 0; i < sccList.size(); i++) {
@@ -355,61 +352,33 @@ public class MyCITS2200Project {
         }
         return result;
     }
-
-    private void firstDFS(int vertex, Stack<Integer> stack, boolean[] visited) {
-        visited[vertex] = true;
-        List<Integer> neighbours = graph.get(vertex);
-
+    
+    private void firstDFS(String vertex, Stack<String> stack, boolean[] visited) {
+        visited[urlKey.get(vertex)] = true;
+        List<String> neighbours = graph.get(vertex);
+    
         if (neighbours != null) {
-            for (int i : neighbours) {
-                if (!visited[i]) {
-                    firstDFS(i, stack, visited);
+            for (String neighbour : neighbours) {
+                int neighbourID = urlKey.get(neighbour);
+                if (!visited[neighbourID]) {
+                    firstDFS(neighbour, stack, visited);
                 }
             }
         }
         stack.push(vertex);
     }
-
-    private void secondDFS(int vertex, boolean[] visited, List<Integer> scc) {
-        visited[vertex] = true;
-        scc.add(vertex);
-        List<Integer> neighbours = transGraph.get(vertex);
-
+    
+    private void secondDFS(String vertex, boolean[] visited, List<Integer> scc) {
+        visited[urlKey.get(vertex)] = true;
+        scc.add(urlKey.get(vertex));
+        List<String> neighbours = transGraph.get(vertex);
+    
         if (neighbours != null) {
-            for (int i : neighbours) {
-                if (!visited[i]) {
-                    secondDFS(i, visited, scc);
+            for (String neighbour : neighbours) {
+                int neighbourID = urlKey.get(neighbour);
+                if (!visited[neighbourID]) {
+                    secondDFS(neighbour, visited, scc);
                 }
             }
         }
     }
-
-    public static void main(String[] args) {
-        // project instance
-        MyCITS2200Project project = new MyCITS2200Project();
-
-        // HAMILTONIAN PATH
-
-        // hamiltonian
-        // 0: [1, 2, 3]
-        // 1: [0, 2, 4]
-        // 2: [0, 1, 3, 4]
-        // 3: [0, 2]
-        // 4: [1, 2]
-
-        // not hamiltonian = empty array
-        project.addEdge("1", "3");
-        project.addEdge("2", "3");
-        project.addEdge("3", "4");
-        project.addEdge("4", "6");
-        project.addEdge("6", "5");
-        project.addEdge("5", "3");
-
-        // print functions array
-        System.out.println("hamiltonian:");
-        String[] s = project.getHamiltonianPath();
-        for (String i : s) {
-            System.out.println(i);
-        }
-    }
-}
