@@ -320,19 +320,19 @@ public class MyCITS2200Project {
     }
 
     public static void main(String[] args) {
-        MyCITS2200Project project = new MyCITS2200Project();
+        // MyCITS2200Project project = new MyCITS2200Project();
 
-        project.addEdge("urlA", "urlE");
-        project.addEdge("urlE", "urlC");
-        project.addEdge("urlE", "urlB");
-        project.addEdge("urlC", "urlD");
-        project.addEdge("urlD", "urlB");
+        // project.addEdge("urlA", "urlE");
+        // project.addEdge("urlE", "urlC");
+        // project.addEdge("urlE", "urlB");
+        // project.addEdge("urlC", "urlD");
+        // project.addEdge("urlD", "urlB");
         // project.addEdge("urlB", "urlD");
 
-        String[] s = project.getHamiltonianPath();
-        for (String url : s) {
-            System.out.println(url);
-        }
+        // String[] s = project.getHamiltonianPath();
+        // for (String url : s) {
+        //     System.out.println(url);
+        // }
 
     }
 }
