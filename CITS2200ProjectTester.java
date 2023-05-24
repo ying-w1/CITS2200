@@ -24,10 +24,43 @@ public class CITS2200ProjectTester {
 		// Change this to be the path to the graph file.
 		String pathToGraphFile = "testURLs.txt";
 		// Create an instance of your implementation.
-		MyCITS2200Project proj = new MyCITS2200Project();
+		MyCITS2200Project project = new MyCITS2200Project();
 		// Load the graph into the project.
-		loadGraph(proj, pathToGraphFile);
+		loadGraph(project, pathToGraphFile);
 
 		// Write your own tests!
+        
+
+        //project.addEdge("URLA", "URLB");
+        //project.addEdge("URLA", "URLC");
+        //project.addEdge("URLA", "URLD");
+
+        // Testing centers
+        String[] centers = project.getCenters();
+        System.out.println("Centres:");
+        for (String center : centers) {
+            System.out.println(center);
+        }
+    
+        // Testing shortest path
+    int shortestPathLength = project.getShortestPath("/wiki/Flow_network to /wiki/Braess%27_paradox", "/wiki/Flow_network to /wiki/Circulation_problem");
+    System.out.println("Shortest Path Length: " + shortestPathLength);
+
+
+    // Testing strongly connected components
+    // Get strongly connected components
+    String[][] components = project.getStronglyConnectedComponents();
+
+        // Print the components
+        for (String[] component : components) {
+            System.out.println(Arrays.toString(component));
+        }
+    
+        //Testing Hamiltonian path
+        String[] hamiltonianPath = project.getHamiltonianPath();
+        System.out.println("Hamiltonian Path:");
+        for (String url : hamiltonianPath) {
+            System.out.println(url);
+            }
 	}
 }

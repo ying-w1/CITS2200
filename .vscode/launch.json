@@ -5,6 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "CITS2200ProjectTester",
+            "request": "launch",
+            "mainClass": "CITS2200ProjectTester",
+            "projectName": "CITS2200_8d06124a"
+        },
+        {
             "name": "Java",
             "type": "java",
             "request": "launch",
