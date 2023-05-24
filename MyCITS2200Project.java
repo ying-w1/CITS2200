@@ -219,9 +219,6 @@ public class MyCITS2200Project {
             if (eccentricity < minEccentricity) {
                 minEccentricity = eccentricity;
             }
-            if (eccentricity == minEccentricity) {
-                centers.add(vertex);
-            }
         }
 
         // Compute the eccentricity for each of the vertices 
@@ -234,33 +231,29 @@ public class MyCITS2200Project {
             }
         }
 
-        // Return an empty array if no centers are found
-        if (centers.isEmpty()) {
-            return new String[0];
-        }
-
         // Add all centers into the result array and return the array
         String[] result = new String[centers.size()];
         for (int i = 0; i < result.length; i++) {
             result[i] = centers.get(i);
+    }
+    // Return an empty array if no centers are found
+        if (centers.isEmpty()) {
+         return new String[0];
         }
-
         return result;
     }
-    
+
     private int vertexEccentricity(String vertex, Set<String> allVertices) {
-        List<Integer> eccList = new ArrayList<>();
-        int ecc = 0;
-
-        // For the vertex @param get the shortest path to every other vertex
+        int maxShortestPath = 0;
+    
         for (String v : allVertices) {
-            eccList.add(getShortestPath(vertex, v));
+            int shortestPath = getShortestPath(vertex, v);
+            if (shortestPath > maxShortestPath) {
+                maxShortestPath = shortestPath;
+            }
         }
-
-        // Get the largest path of the getShortestPath for the vertex @param
-        // This is the eccentricity for the vertex @param
-        ecc = Collections.max(eccList);
-        return ecc;
+    
+        return maxShortestPath;
     }
 
     public String[][] getStronglyConnectedComponents() {
