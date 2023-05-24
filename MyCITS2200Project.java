@@ -209,40 +209,59 @@ public class MyCITS2200Project {
      */
     public String[] getCenters() {
         List<String> centers = new ArrayList<>();
-        Set<String> vertices = graph.keySet();
-        int minimumEccentricity = Integer.MAX_VALUE;
+        Set<String> allVertices = graph.keySet();
+        int minEccentricity = Integer.MAX_VALUE;
 
-        for (String vertex : vertices) {
-            int eccentricity = 0;
-            Set<String> visited = new HashSet<>();
-            Queue<String> queue = new LinkedList<>();
-            queue.offer(vertex);
-            visited.add(vertex);
-
-            while (!queue.isEmpty()) {
-                int size = queue.size();
-                for (int i = 0; i < size; i++) {
-                    String current = queue.poll();
-                    for (String neighbour : graph.get(current)) {
-                        if (!visited.contains(neighbour)) {
-                            queue.offer(neighbour);
-                            visited.add(neighbour);
-                        }
-                    }
-                }
-                eccentricity++;
+        // Compute eccentricity of each vertex (shortest path from one vertex to every other)
+        // by calling the getShortestPath() method
+        for (String vertex : allVertices) {
+            int eccentricity = vertexEccentricity(vertex, allVertices);
+            if (eccentricity < minEccentricity) {
+                minEccentricity = eccentricity;
             }
-
-            if (eccentricity < minimumEccentricity) {
-                minimumEccentricity = eccentricity;
-                centers.clear();
-                centers.add(vertex);
-            } else if (eccentricity == minimumEccentricity) {
+            if (eccentricity == minEccentricity) {
                 centers.add(vertex);
             }
         }
 
-        return centers.toArray(new String[0]);
+        // Compute the eccentricity for each of the vertices 
+        // If the eccentricity for the vertex = minEccentricity (the radius)
+        // That vertex is a central vertex and is to be added to centers
+        for (String vertex : allVertices) {
+            int eccentricity = vertexEccentricity(vertex, allVertices);
+            if (eccentricity == minEccentricity) {
+                centers.add(vertex);
+            }
+        }
+
+        // Return an empty array if no centers are found
+        if (centers.isEmpty()) {
+            return new String[0];
+        }
+
+        // Add all centers into the result array and return the array
+        String[] result = new String[centers.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = centers.get(i);
+            System.out.println(centers.get(i));
+        }
+
+        return result;
+    }
+    
+    private int vertexEccentricity(String vertex, Set<String> allVertices) {
+        List<Integer> eccList = new ArrayList<>();
+        int ecc = 0;
+
+        // For the vertex @param get the shortest path to every other vertex
+        for (String v : allVertices) {
+            eccList.add(getShortestPath(vertex, v));
+        }
+
+        // Get the largest path of the getShortestPath for the vertex @param
+        // This is the eccentricity for the vertex @param
+        ecc = Collections.max(eccList);
+        return ecc;
     }
 
     public String[][] getStronglyConnectedComponents() {
