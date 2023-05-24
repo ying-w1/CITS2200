@@ -243,7 +243,6 @@ public class MyCITS2200Project {
         String[] result = new String[centers.size()];
         for (int i = 0; i < result.length; i++) {
             result[i] = centers.get(i);
-            System.out.println(centers.get(i));
         }
 
         return result;
