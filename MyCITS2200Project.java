@@ -1,4 +1,3 @@
-import java.io.*;
 import java.util.*;
 
 public class MyCITS2200Project {
@@ -74,65 +73,66 @@ public class MyCITS2200Project {
     }
 
     /**
- * Finds the shortest path in number of links between two pages.
- * If there is no path, returns -1.
- *
- * @param urlFrom the URL where the path should start.
- * @param urlTo   the URL where the path should end.
- * @return the length of the shortest path in number of links followed.
- */
-public int getShortestPath(String urlFrom, String urlTo) {
-    // Create a queue for BFS traversal
-    Queue<String> queue = new LinkedList<>();
-    // Create a visited array to keep track of visited vertices
-    boolean[] visited = new boolean[urlArray.size()];
-    // Create a distance array to store the shortest distance from the starting vertex
-    int[] distance = new int[urlArray.size()];
-    // Initialize distance array with -1 (indicating unreachable vertices)
-    Arrays.fill(distance, -1);
-    // Get the starting vertex index
-    int fromIndex = urlKey.get(urlFrom);
-    // Get the destination vertex index
-    int toIndex = urlKey.get(urlTo);
+     * Finds the shortest path in number of links between two pages.
+     * If there is no path, returns -1.
+     *
+     * @param urlFrom the URL where the path should start.
+     * @param urlTo   the URL where the path should end.
+     * @return the length of the shortest path in number of links followed.
+     */
+    public int getShortestPath(String urlFrom, String urlTo) {
+        // Create a queue for BFS traversal
+        Queue<String> queue = new LinkedList<>();
+        // Create a visited array to keep track of visited vertices
+        boolean[] visited = new boolean[urlArray.size()];
+        // Create a distance array to store the shortest distance from the starting
+        // vertex
+        int[] distance = new int[urlArray.size()];
+        // Initialize distance array with -1 (indicating unreachable vertices)
+        Arrays.fill(distance, -1);
+        // Get the starting vertex index
+        int fromIndex = urlKey.get(urlFrom);
+        // Get the destination vertex index
+        int toIndex = urlKey.get(urlTo);
 
-    // Enqueue the starting vertex
-    queue.add(urlFrom);
-    // Mark the starting vertex as visited
-    visited[fromIndex] = true;
-    // Set the distance of the starting vertex to 0
-    distance[fromIndex] = 0;
+        // Enqueue the starting vertex
+        queue.add(urlFrom);
+        // Mark the starting vertex as visited
+        visited[fromIndex] = true;
+        // Set the distance of the starting vertex to 0
+        distance[fromIndex] = 0;
 
-    // Perform BFS traversal
-    while (!queue.isEmpty()) {
-        // Dequeue a vertex
-        String currentUrl = queue.poll();
-        int currentIndex = urlKey.get(currentUrl);
+        // Perform BFS traversal
+        while (!queue.isEmpty()) {
+            // Dequeue a vertex
+            String currentUrl = queue.poll();
+            int currentIndex = urlKey.get(currentUrl);
 
-        // If the destination vertex is reached, return the shortest distance
-        if (currentIndex == toIndex) {
-            return distance[currentIndex];
-        }
+            // If the destination vertex is reached, return the shortest distance
+            if (currentIndex == toIndex) {
+                return distance[currentIndex];
+            }
 
-        // Iterate over the neighbours of the current vertex
-        List<String> neighbours = graph.get(currentUrl);
-        for (String neighbourUrl : neighbours) {
-            int neighbourIndex = urlKey.get(neighbourUrl);
+            // Iterate over the neighbours of the current vertex
+            List<String> neighbours = graph.get(currentUrl);
+            for (String neighbourUrl : neighbours) {
+                int neighbourIndex = urlKey.get(neighbourUrl);
 
-            // If the neighbour vertex is not visited
-            if (!visited[neighbourIndex]) {
-                // Mark the neighbour vertex as visited
-                visited[neighbourIndex] = true;
-                // Update the distance of the neighbour vertex
-                distance[neighbourIndex] = distance[currentIndex] + 1;
-                // Enqueue the neighbour vertex
-                queue.add(neighbourUrl);
+                // If the neighbour vertex is not visited
+                if (!visited[neighbourIndex]) {
+                    // Mark the neighbour vertex as visited
+                    visited[neighbourIndex] = true;
+                    // Update the distance of the neighbour vertex
+                    distance[neighbourIndex] = distance[currentIndex] + 1;
+                    // Enqueue the neighbour vertex
+                    queue.add(neighbourUrl);
+                }
             }
         }
-    }
 
-    // If the destination vertex is not reachable, return -1
-    return -1;
-}
+        // If the destination vertex is not reachable, return -1
+        return -1;
+    }
 
     /**
      * Finds a Hamiltonian path in the page graph. There may be many
@@ -148,76 +148,8 @@ public int getShortestPath(String urlFrom, String urlTo) {
      */
     public String[] getHamiltonianPath() {
 
-        // int n = urlArray.size(); // Number of vertices
-        // boolean[][] prev = new boolean[n][n]; // Previous vertex in the path
-
-        // // Iterate over all subsets of vertices
-        // for (int subset = 1; subset < (int) Math.pow(2, n); subset++) {
-        // System.out.println(subset);
-
-        // for (int i = 0; i < n; i++) {
-        // if (((subset / (int) Math.pow(2, i)) % 2) == 1) {
-        // for (int j : graph.get(i)) {
-        // if ((((subset / (int) Math.pow(2, j)) % 2) == 1) && !prev[i][j]) {
-        // prev[i][j] = true;
-        // }
-        // }
-        // }
-        // }
-        // }
-
-        // // Find the starting vertex for the Hamiltonian path
-        // int start = 0;
-        // int subset = (int) Math.pow(2, n) - 1;
-        // for (int i = 0; i < n; i++) {
-        // if (prev[i][subset]) {
-        // start = i;
-        // break;
-        // }
-        // }
-
-        // // Reconstruct the Hamiltonian path
-        // List<Integer> path = new ArrayList<>();
-        // subset = (int) Math.pow(2, n) - 1;
-        // int current = start;
-        // while (subset != 0) {
-        // path.add(current);
-        // for (int i = 0; i < n; i++) {
-        // if (prev[current][i] && (((subset / (int) Math.pow(2, i)) % 2) == 1)) {
-        // subset = subset - (int) Math.pow(2, current);
-        // current = i;
-        // break;
-        // }
-        // }
-        // }
-        // path.add(start);
-
-        // // Convert the path to a String array
-        // String[] pathArray = new String[path.size()];
-        // for (int i = 0; i < path.size(); i++) {
-        // pathArray[i] = String.valueOf(path.get(i));
-        // }
-
-        // return pathArray;
-        // ------------------------------------------------
         // Number of vertices
         int numURLs = urlArray.size();
-
-        /*
-         * foreach vertex : graph/adacencyList
-         * 
-         * iterate NEIGHBOURS of vertex
-         * for (int neighbor : adjacencyList.get(vertex)) { ... } to perform operations
-         * on each neighbor.
-         */
-        // Build adjacency matrix from the list
-        int matrix[][] = new int[numURLs][numURLs];
-        for (int i = 0; i < numURLs; i++) {
-            List<Integer> neighbors = graph.get(i);
-            for (int j : neighbors) {
-                matrix[i][j] = 1;
-            }
-        }
 
         String dp[][] = new String[numURLs][(1 << numURLs)];
         // Set all dp[i][(1 << i)] to corresponding vertices
@@ -235,7 +167,7 @@ public int getShortestPath(String urlFrom, String urlTo) {
                     // neighbor k present in current subset
                     for (int k = 0; k < numURLs; k++) {
                         if ((i & (1 << k)) != 0 &&
-                                matrix[k][j] == 1 && j != k &&
+                                graph.get(urlArray.get(k)).contains(urlArray.get(j)) && j != k &&
                                 dp[k][i ^ (1 << j)] != null) {
                             // include the current vertex in dp[j][i]
                             dp[j][i] = dp[k][i ^ (1 << j)] + " " + j;
@@ -253,6 +185,10 @@ public int getShortestPath(String urlFrom, String urlTo) {
             if (dp[i][(1 << numURLs) - 1] != null) {
                 // Split the string to get an array of vertices
                 String[] path = dp[i][(1 << numURLs) - 1].split(" ");
+                for (int j = 0; j < path.length; j++) {
+                    // Convert the vertices to URLs
+                    path[j] = urlArray.get(Integer.parseInt(path[j]));
+                }
                 return path;
             }
         }
@@ -275,14 +211,14 @@ public int getShortestPath(String urlFrom, String urlTo) {
         List<String> centers = new ArrayList<>();
         Set<String> vertices = graph.keySet();
         int minimumEccentricity = Integer.MAX_VALUE;
-    
+
         for (String vertex : vertices) {
             int eccentricity = 0;
             Set<String> visited = new HashSet<>();
             Queue<String> queue = new LinkedList<>();
             queue.offer(vertex);
             visited.add(vertex);
-    
+
             while (!queue.isEmpty()) {
                 int size = queue.size();
                 for (int i = 0; i < size; i++) {
@@ -296,7 +232,7 @@ public int getShortestPath(String urlFrom, String urlTo) {
                 }
                 eccentricity++;
             }
-    
+
             if (eccentricity < minimumEccentricity) {
                 minimumEccentricity = eccentricity;
                 centers.clear();
@@ -305,7 +241,7 @@ public int getShortestPath(String urlFrom, String urlTo) {
                 centers.add(vertex);
             }
         }
-    
+
         return centers.toArray(new String[0]);
     }
 
@@ -315,7 +251,7 @@ public int getShortestPath(String urlFrom, String urlTo) {
         Stack<String> stack = new Stack<>();
         String[][] result;
         Arrays.fill(visited, false);
-    
+
         // Perform the first depth-first search (DFS)
         for (String url : graph.keySet()) {
             int urlID = urlKey.get(url);
@@ -323,10 +259,10 @@ public int getShortestPath(String urlFrom, String urlTo) {
                 firstDFS(url, stack, visited);
             }
         }
-    
+
         // Reset the visited array in preparation for the second DFS
         Arrays.fill(visited, false);
-    
+
         // Perform the second depth-first search on the transposed graph
         // Get strongly connected components
         List<List<Integer>> sccList = new ArrayList<>();
@@ -339,7 +275,7 @@ public int getShortestPath(String urlFrom, String urlTo) {
                 sccList.add(scc);
             }
         }
-    
+
         // Convert List of strongly connected components to String[][]
         result = new String[sccList.size()][];
         for (int i = 0; i < sccList.size(); i++) {
@@ -352,11 +288,11 @@ public int getShortestPath(String urlFrom, String urlTo) {
         }
         return result;
     }
-    
+
     private void firstDFS(String vertex, Stack<String> stack, boolean[] visited) {
         visited[urlKey.get(vertex)] = true;
         List<String> neighbours = graph.get(vertex);
-    
+
         if (neighbours != null) {
             for (String neighbour : neighbours) {
                 int neighbourID = urlKey.get(neighbour);
@@ -367,12 +303,12 @@ public int getShortestPath(String urlFrom, String urlTo) {
         }
         stack.push(vertex);
     }
-    
+
     private void secondDFS(String vertex, boolean[] visited, List<Integer> scc) {
         visited[urlKey.get(vertex)] = true;
         scc.add(urlKey.get(vertex));
         List<String> neighbours = transGraph.get(vertex);
-    
+
         if (neighbours != null) {
             for (String neighbour : neighbours) {
                 int neighbourID = urlKey.get(neighbour);
@@ -382,3 +318,21 @@ public int getShortestPath(String urlFrom, String urlTo) {
             }
         }
     }
+
+    public static void main(String[] args) {
+        MyCITS2200Project project = new MyCITS2200Project();
+
+        project.addEdge("urlA", "urlE");
+        project.addEdge("urlE", "urlC");
+        project.addEdge("urlE", "urlB");
+        project.addEdge("urlC", "urlD");
+        project.addEdge("urlD", "urlB");
+        // project.addEdge("urlB", "urlD");
+
+        String[] s = project.getHamiltonianPath();
+        for (String url : s) {
+            System.out.println(url);
+        }
+
+    }
+}
