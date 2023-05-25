@@ -1,22 +1,28 @@
 import java.util.*;
 
+/**
+ * A class ... subset of a graph of wikipedia pages.
+ * Vertices are represented as the URL of the page.
+ * Edges are represented as teh hyperlinks between pages.
+ * The graph is directed and unweighted.
+ * 
+ * The Class implements the CITS2200Project interface.
+ * Authors: Ying Wang (22863462) and Scott Castledine (23083278)
+ */
 public class MyCITS2200Project {
 
-    // field variable instantiation
+    // Declare class field variables
     private Map<String, List<String>> graph;
-    private Map<String, List<String>> transGraph; // Reverse direction of adj for Kosaraju's algorithm in
-    private ArrayList<String> urlArray; // Array of URL (vertices)
-    private HashMap<String, Integer> urlKey; // Key = URL, value = index in urlArray
-    /*
-     * key (URL) : values (index)
-     * /wiki.com/page : 1
-     * /wiki.com/page : 2
-     * /wiki.com/page : 3
-     * etc..
-     */
+    private Map<String, List<String>> transGraph;
+    private ArrayList<String> urlArray;
+    private HashMap<String, Integer> urlKey;
 
     /**
-     * Constructor for MyCITS2200Project
+     * Constructor for MyCITS2200Project, Initializes class field variables
+     * Graph is an adjacency list represented as a HashMap
+     * TransGraph is the transpose of the graph
+     * urlArray is an array of URL vertices
+     * urlKey is a HashMap of URL (key) to index (value) in urlArray
      */
     public MyCITS2200Project() {
         graph = new HashMap<String, List<String>>();
@@ -26,8 +32,12 @@ public class MyCITS2200Project {
     }
 
     /**
-     * Check if vertex exist in the graph
-     * If not in graph, add to graph
+     * A method to add a vertex to the graph
+     * Adds a directed edge between two vertices from urlFrom to urlTo
+     * calls addVert method to add vertices to the graph
+     * 
+     * @param urlFrom
+     * @param urlTo
      */
     public void addEdge(String urlFrom, String urlTo) {
         // Add the edge to our map & array
@@ -41,7 +51,12 @@ public class MyCITS2200Project {
         addToTransGraph(urlTo, urlFrom);
     }
 
-    private void addVert(String v) {
+    /**
+     * A method to add a vertex to the graph
+     * Checks if vertex exists in the map of URL to ID
+     * If not already in array, adds vertex to array & map
+     */
+    public void addVert(String v) {
         // Check if the edge exists in the map from URL to ID
         if (!urlKey.containsKey(v)) {
             urlArray.add(v);
@@ -51,7 +66,16 @@ public class MyCITS2200Project {
 
     }
 
-    private void addToGraph(String from, String to) {
+    /**
+     * A method to add a vertex to the graph
+     * Adds a directed edge between two vertices from urlFrom to urlTo
+     * checks if both vertices are already in the graph
+     * creates a new LinkedList for any vertex not already in the graph
+     * 
+     * @param from
+     * @param to
+     */
+    public void addToGraph(String from, String to) {
         if (!graph.containsKey(from)) {
             graph.put(from, new LinkedList<>());
         }
@@ -61,7 +85,16 @@ public class MyCITS2200Project {
         graph.get(from).add(to);
     }
 
-    private void addToTransGraph(String from, String to) {
+    /**
+     * A method to add a vertex to the transposed graph
+     * Adds a directed edge between two vertices from urlFrom to urlTo
+     * checks if both vertices are already in the graph
+     * creates a new LinkedList for any vertex not already in the graph
+     * 
+     * @param from
+     * @param to
+     */
+    public void addToTransGraph(String from, String to) {
 
         if (!transGraph.containsKey(from)) {
             transGraph.put(from, new LinkedList<>());
@@ -73,9 +106,11 @@ public class MyCITS2200Project {
     }
 
     /**
+     * A method to find the shortest path between two vertices
      * Finds the shortest path in number of links between two pages.
+     * Returns the length of the shortest path in number of links followed.
      * If there is no path, returns -1.
-     *
+     * 
      * @param urlFrom the URL where the path should start.
      * @param urlTo   the URL where the path should end.
      * @return the length of the shortest path in number of links followed.
@@ -135,16 +170,14 @@ public class MyCITS2200Project {
     }
 
     /**
-     * Finds a Hamiltonian path in the page graph. There may be many
-     * possible Hamiltonian paths. Any of these paths is a correct output.
-     * This method should never be called on a graph with more than 20
-     * vertices. If there is no Hamiltonian path, this method will
-     * return an empty array. The output array should contain the URLs of pages
-     * in a Hamiltonian path. The order matters, as the elements of the
-     * array represent this path in sequence. So the element [0] is the start
-     * of the path, and [1] is the next page, and so on.
+     * A method to find any Hamiltonian path in the graph
+     * There may be many possible Hamiltonian paths.
+     * This method should never be called on a graph with more than 20 vertices.
+     * If there is no Hamiltonian path, this method will return an empty array.
+     * If a path is found, the method returns an array containing the URLs of pages
+     * The URL in the Hamiltonian path found are in sequential order from beginning
      * 
-     * @return a Hamiltonian path of the page graph.
+     * @return an array of a Hamiltonian path of the page graph, or empty.
      */
     public String[] getHamiltonianPath() {
 
@@ -199,10 +232,8 @@ public class MyCITS2200Project {
     }
 
     /**
-     * Finds all the centers of the page graph. The order of pages
-     * in the output does not matter. Any order is correct as long as
-     * all the centers are in the array, and no pages that aren't centers
-     * are in the array.
+     * A method to find all the centers of the page graph.
+     * The output is not ordered.
      * 
      * @return an array containing all the URLs that correspond to pages that are
      *         centers.
@@ -212,7 +243,8 @@ public class MyCITS2200Project {
         Set<String> allVertices = graph.keySet();
         int minEccentricity = Integer.MAX_VALUE;
 
-        // Compute eccentricity of each vertex (shortest path from one vertex to every other)
+        // Compute eccentricity of each vertex (shortest path from one vertex to every
+        // other)
         // by calling the getShortestPath() method
         for (String vertex : allVertices) {
             int eccentricity = vertexEccentricity(vertex, allVertices);
@@ -221,7 +253,7 @@ public class MyCITS2200Project {
             }
         }
 
-        // Compute the eccentricity for each of the vertices 
+        // Compute the eccentricity for each of the vertices
         // If the eccentricity for the vertex = minEccentricity (the radius)
         // That vertex is a central vertex and is to be added to centers
         for (String vertex : allVertices) {
@@ -235,27 +267,41 @@ public class MyCITS2200Project {
         String[] result = new String[centers.size()];
         for (int i = 0; i < result.length; i++) {
             result[i] = centers.get(i);
-    }
-    // Return an empty array if no centers are found
+        }
+        // Return an empty array if no centers are found
         if (centers.isEmpty()) {
-         return new String[0];
+            return new String[0];
         }
         return result;
     }
 
-    private int vertexEccentricity(String vertex, Set<String> allVertices) {
+    /**
+     * A helper method to compute the eccentricity of a vertex
+     * called in getCenters() method
+     * 
+     * @param vertex
+     * @param allVertices
+     * @return shortest path with the greatest length
+     */
+    public int vertexEccentricity(String vertex, Set<String> allVertices) {
         int maxShortestPath = 0;
-    
+
         for (String v : allVertices) {
             int shortestPath = getShortestPath(vertex, v);
             if (shortestPath > maxShortestPath) {
                 maxShortestPath = shortestPath;
             }
         }
-    
+
         return maxShortestPath;
     }
 
+    /**
+     * A method to find the strongly connected components of the page graph.
+     * The output is a list of arrays of URLs.
+     * 
+     * @return
+     */
     public String[][] getStronglyConnectedComponents() {
         // Set up necessary variables
         boolean[] visited = new boolean[urlArray.size()];
@@ -300,7 +346,15 @@ public class MyCITS2200Project {
         return result;
     }
 
-    private void firstDFS(String vertex, Stack<String> stack, boolean[] visited) {
+    /**
+     * A helper method to perform the first depth-first search (DFS)
+     * called in getStronglyConnectedComponents() method
+     * 
+     * @param vertex
+     * @param stack
+     * @param visited
+     */
+    public void firstDFS(String vertex, Stack<String> stack, boolean[] visited) {
         visited[urlKey.get(vertex)] = true;
         List<String> neighbours = graph.get(vertex);
 
@@ -315,7 +369,15 @@ public class MyCITS2200Project {
         stack.push(vertex);
     }
 
-    private void secondDFS(String vertex, boolean[] visited, List<Integer> scc) {
+    /**
+     * A helper method to perform the second depth-first search (DFS)
+     * called in getStronglyConnectedComponents() method
+     * 
+     * @param vertex
+     * @param visited
+     * @param scc
+     */
+    public void secondDFS(String vertex, boolean[] visited, List<Integer> scc) {
         visited[urlKey.get(vertex)] = true;
         scc.add(urlKey.get(vertex));
         List<String> neighbours = transGraph.get(vertex);
@@ -331,19 +393,6 @@ public class MyCITS2200Project {
     }
 
     public static void main(String[] args) {
-        // MyCITS2200Project project = new MyCITS2200Project();
-
-        // project.addEdge("urlA", "urlE");
-        // project.addEdge("urlE", "urlC");
-        // project.addEdge("urlE", "urlB");
-        // project.addEdge("urlC", "urlD");
-        // project.addEdge("urlD", "urlB");
-        // project.addEdge("urlB", "urlD");
-
-        // String[] s = project.getHamiltonianPath();
-        // for (String url : s) {
-        //     System.out.println(url);
-        // }
 
     }
 }
