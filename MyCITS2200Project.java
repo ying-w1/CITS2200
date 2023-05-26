@@ -1,9 +1,9 @@
 import java.util.*;
 
 /**
- * A class ... subset of a graph of wikipedia pages.
+ * A class for analysis of a subset of a graph of wikipedia pages.
  * Vertices are represented as the URL of the page.
- * Edges are represented as teh hyperlinks between pages.
+ * Edges are represented as the hyperlinks between pages.
  * The graph is directed and unweighted.
  * 
  * The Class implements the CITS2200Project interface.
